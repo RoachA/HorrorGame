@@ -1,8 +1,8 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.Mathematics;
 #if UNITY_EDITOR
-using UnityEditor;
 #endif
 using UnityEngine;
 
@@ -10,24 +10,81 @@ namespace Game.World.Objects
 {
     public class DoorHandler : MonoBehaviour, IInteractable
     {
+        [Header("Door Parameters")]
         [SerializeField] private Transform _door;
-        [SerializeField] private float _doorAreaStart;
-        [SerializeField] private float _doorAreaEnd;
-        //[SerializeField] private 
-        void IInteractable.InteractStart()
+        private Vector2 _doorRotationRange; // LATERS
+        [SerializeField] private float _torqueForce = 140;
+        [SerializeField] private float _inputRangeFromCenter = 5; //get center of screen, origin +- limits. -- in pixels
+   
+        private InteractionStat m_endStat;
+        private InteractionStat m_startStat;
+        private bool m_isActive;
+        private float m_input_delta;
+        private Rigidbody m_rbDoor;
+
+        InteractionMethod IInteractable.InteractionType { get; set; } = InteractionMethod.ControlledWithX;
+        bool IInteractable.IsActive
         {
-           
+            get => m_isActive;
+            set => m_isActive = value;
+        }
+        InteractionStat IInteractable.EndStat
+        {
+            get => m_endStat;
+            set => m_endStat = value;
+        }
+        InteractionStat IInteractable.StartStat
+        {
+            get => m_startStat;
+            set => m_startStat = value;
         }
 
-        void IInteractable.InteractEnd()
+        GameObject IInteractable.GetInteractionGameObject()
         {
-            
+            // todo can return Iinteractable info laters.
+            return gameObject;
         }
+
+        private void Start()
+        {
+            m_rbDoor = _door.GetComponent<Rigidbody>();
+        }
+
+        private void FixedUpdate()
+        {
+            if (m_isActive && m_startStat.Equals(default(InteractionStat)) == false)
+            {
+                UpdateDoor();
+            }
+        }
+
+        private void UpdateDoor()
+        {
+            m_input_delta = m_startStat.MousePos.x - Input.mousePosition.x;
+            var clampedDelta = Mathf.Clamp(m_input_delta, -_inputRangeFromCenter, _inputRangeFromCenter);
+            var interpolatedVal = Mathf.InverseLerp(-_inputRangeFromCenter, _inputRangeFromCenter, clampedDelta);
+            Vector3 torqueDirection = (m_input_delta >= 0) ? Vector3.up : Vector3.down;
+
+            Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
+            m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+        }
+
+        void IInteractable.InteractStart(InteractionStat stat)
+        {
+            m_isActive = true;
+            m_startStat = stat;
+        }
+
+        void IInteractable.InteractEnd(InteractionStat stat)
+        {
+            m_isActive = false;
+            m_endStat = stat;
+        }
+        
 #if UNITY_EDITOR     
        //gizmos 
        void OnSceneGUI() 
        {
-         
        }
     }
 #endif
