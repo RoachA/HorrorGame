@@ -38,6 +38,7 @@ ExportedObj/
 *.user
 *.userprefs
 *.pidb
+*.mp4
 *.booproj
 *.svd
 *.pdb
