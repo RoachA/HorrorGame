@@ -434,5 +434,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _door: {fileID: 542768237000430734}
-  _torqueForce: 50
+  _doorHandle: {fileID: 5117744515937040016}
+  _torqueForce: 10
   _inputRangeFromCenter: 350

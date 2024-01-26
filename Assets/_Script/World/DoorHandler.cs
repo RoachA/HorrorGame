@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Collections.Generic;using DG.Tweening;
+using TMPro;
 using Unity.Mathematics;
 #if UNITY_EDITOR
 #endif
@@ -12,6 +13,7 @@ namespace Game.World.Objects
     {
         [Header("Door Parameters")]
         [SerializeField] private Transform _door;
+        [SerializeField] private Transform _doorHandle;
         private Vector2 _doorRotationRange; // LATERS
         [SerializeField] private float _torqueForce = 140;
         [SerializeField] private float _inputRangeFromCenter = 5; //get center of screen, origin +- limits. -- in pixels
@@ -21,6 +23,8 @@ namespace Game.World.Objects
         private bool m_isActive;
         private float m_input_delta;
         private Rigidbody m_rbDoor;
+        private Sequence m_handleSeq;
+
 
         InteractionMethod IInteractable.InteractionType { get; set; } = InteractionMethod.ControlledWithX;
         bool IInteractable.IsActive
@@ -69,16 +73,27 @@ namespace Game.World.Objects
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
         }
 
+        private void UpdateHandle(bool isGrabbed)
+        {
+            m_handleSeq?.Kill();
+            m_handleSeq = DOTween.Sequence();
+
+            m_handleSeq.Insert(0,
+                _doorHandle.DOLocalRotate(isGrabbed ? Vector3.forward * 35f : Vector3.zero, 0.35f).SetEase(Ease.InOutBack));
+        }
+
         void IInteractable.InteractStart(InteractionStat stat)
         {
             m_isActive = true;
             m_startStat = stat;
+            UpdateHandle(true);
         }
 
         void IInteractable.InteractEnd(InteractionStat stat)
         {
             m_isActive = false;
             m_endStat = stat;
+            UpdateHandle(false);
         }
         
 #if UNITY_EDITOR     
