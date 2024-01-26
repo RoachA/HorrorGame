@@ -160,7 +160,7 @@ Material:
     - _LeakColoration: {r: 0, g: 0, b: 0, a: 0}
     - _LeakDefiniton: {r: 0, g: 1, b: 0, a: 0}
     - _LeakTile: {r: 0, g: 0, b: 0, a: 0}
-    - _MaskDefinition: {r: 0.04, g: 0.02, b: 0, a: 0}
+    - _MaskDefinition: {r: 0.02, g: 0.01, b: 0, a: 0}
     - _MaskTile: {r: 0.15, g: 0.15, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 0, g: 1, b: 0, a: 0}
     - _Smoothness: {r: 0, g: 0.15, b: 0, a: 0}

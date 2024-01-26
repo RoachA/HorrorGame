@@ -277,11 +277,11 @@ GameObject:
   m_Component:
   - component: {fileID: 542768237000430734}
   - component: {fileID: 1374664419965338176}
+  - component: {fileID: 2170382164054970349}
   - component: {fileID: 1774927113100603645}
   - component: {fileID: 4288042305403751529}
   - component: {fileID: 3032737505437927637}
   - component: {fileID: 3924655573875491105}
-  - component: {fileID: 2170382164054970349}
   m_Layer: 0
   m_Name: Door
   m_TagString: Untagged
@@ -314,6 +314,22 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8317488367046582476}
   m_Mesh: {fileID: 2619086233303812490, guid: 09957155ff4c6744dbdb3e2fbfc2b0f3, type: 3}
+--- !u!114 &2170382164054970349
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8317488367046582476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eb19a048fbef3e84c8c75378f14f42a4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _door: {fileID: 542768237000430734}
+  _doorHandle: {fileID: 5117744515937040016}
+  _torqueForce: 14
+  _inputRangeFromCenter: 350
 --- !u!23 &1774927113100603645
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -421,19 +437,3 @@ HingeJoint:
   m_EnablePreprocessing: 0
   m_MassScale: 50
   m_ConnectedMassScale: 100
---- !u!114 &2170382164054970349
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8317488367046582476}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: eb19a048fbef3e84c8c75378f14f42a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _door: {fileID: 542768237000430734}
-  _doorHandle: {fileID: 5117744515937040016}
-  _torqueForce: 10
-  _inputRangeFromCenter: 350

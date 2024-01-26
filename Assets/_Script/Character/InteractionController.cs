@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Game.UI;
 using Game.World.Objects;
 using UnityEngine;
 
@@ -16,6 +17,8 @@ namespace Game.Character
         private IInteractable m_interactionTarget;
         private InteractionStat m_startStat;
         private InteractionStat m_endStat;
+
+        [SerializeField] private GameplayPanelUi _gameplayUI;
 
         private void Start()
         {
@@ -35,12 +38,14 @@ namespace Game.Character
                 {
                     IInteractable interactableComponent = hit.collider.GetComponent<IInteractable>();
                     m_interacting = interactableComponent != null;
+                    _gameplayUI.SetCrosshairState(CrosshairStates.Active);
 
                     if (m_interacting && m_interactionTarget == null)
                     {
                         m_interactionTarget = interactableComponent;
                         m_startStat = new InteractionStat(Time.time, Input.mousePosition);
-                        m_interactionTarget.InteractStart(m_startStat);
+                        m_interactionTarget?.InteractStart(m_startStat);
+                        _gameplayUI.SetCrosshairState(CrosshairStates.InUse);
                         Debug.Log("Started interacting with " + hit.collider.gameObject.name + " : : : " + m_startStat.Time);
                     }
                 }
@@ -53,6 +58,7 @@ namespace Game.Character
                 Debug.Log("Finished interacting with " + m_interactionTarget.GetInteractionGameObject().name + " : : : " + m_endStat.Time);
                 m_interactionTarget = null;
                 m_interacting = false;
+                _gameplayUI.SetCrosshairState(CrosshairStates.InActive);
             }
         }
     }
