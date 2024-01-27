@@ -10,7 +10,7 @@ using UnityEngine;
 
 namespace Game.World.Objects
 {
-    public class DoorHandler : MonoBehaviour, IInteractable
+    public class DoorHandler : MonoBehaviour, IInteractable, IHaveIdentity
     {
         [Header("Door Parameters")]
         [SerializeField] private Transform _door;
@@ -50,9 +50,17 @@ namespace Game.World.Objects
             // todo can return Iinteractable info laters.
             return gameObject;
         }
+        
+        public int Id { get; set; }
+        
+        public void GenerateUniqueId()
+        {
+          Id = UniqueIDHelper.GenerateUniqueId(this);
+        }
 
         private void Start()
         {
+            GenerateUniqueId();
             m_rbDoor = _door.GetComponent<Rigidbody>();
         }
 
@@ -104,7 +112,7 @@ namespace Game.World.Objects
                 return;
             }
             
-            ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + " at " + m_startStat.Time;
+            ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_startStat.Time;
             m_isActive = true;
             m_startStat = stat;
             UpdateHandle(true);
@@ -112,7 +120,7 @@ namespace Game.World.Objects
 
         void IInteractable.InteractEnd(InteractionStat stat, Action callback)
         {
-            ScreenDubegger._objectUsedDebug = "Finished interacting with " + gameObject.name + " at " + m_endStat.Time;
+            ScreenDubegger._objectUsedDebug = "Finished interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_endStat.Time;
             m_isActive = false;
             m_endStat = stat;
             UpdateHandle(false);
