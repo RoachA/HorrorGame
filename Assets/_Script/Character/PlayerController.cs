@@ -1,8 +1,26 @@
 using Cinemachine;
 using UnityEngine;
 
-public class CharacterController : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
+    private static PlayerController instance;
+    public static PlayerController Instance
+    {
+        get
+        {
+            if (instance == null)
+            {
+                instance = FindObjectOfType<PlayerController>();
+                if (instance == null)
+                {
+                    Debug.LogError("Player instance not found in the scene.");
+                }
+            }
+
+            return instance;
+        }
+    }
+    
     public float Speed = 10.0f;
     private float m_translation;
     private float m_strafe;
