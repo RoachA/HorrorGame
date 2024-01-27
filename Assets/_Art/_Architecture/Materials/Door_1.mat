@@ -126,6 +126,7 @@ Material:
     - _Metallic: 0
     - _Metallicness: 0.4
     - _OcclusionStrength: 1
+    - _PaintOffset: 4.23
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -150,6 +151,8 @@ Material:
     - _LeakTile: {r: 0.1, g: 0.5, b: 0, a: 0}
     - _MaskTile: {r: 0.71, g: 0.22, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 1, g: -0.13, b: 0, a: 0}
+    - _Paint: {r: 0, g: 0, b: 0, a: 1}
+    - _PaintVector: {r: 1, g: 0, b: 0, a: 0}
     - _SmoothnessStep: {r: 0.7, g: -0.08, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _VerticalMapSharpness: {r: 1.5, g: 0.62, b: 0, a: 0}

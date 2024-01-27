@@ -105,6 +105,7 @@ namespace Game.World.Objects
 
         void IInteractable.InteractStart(InteractionStat stat, Action callback)
         {
+            UpdateHandle(true);
             if (_isLocked)
             {
                 OnLocked();
@@ -115,7 +116,6 @@ namespace Game.World.Objects
             ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_startStat.Time;
             m_isActive = true;
             m_startStat = stat;
-            UpdateHandle(true);
         }
 
         void IInteractable.InteractEnd(InteractionStat stat, Action callback)
