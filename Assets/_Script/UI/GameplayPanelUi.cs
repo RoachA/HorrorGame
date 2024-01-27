@@ -19,6 +19,7 @@ namespace Game.UI
         [SerializeField] private TextMeshProUGUI _focusDebugTxt;
         [SerializeField] private TextMeshProUGUI _playerPosTxt;
         [SerializeField] private TextMeshProUGUI _fps;
+        [SerializeField] private TextMeshProUGUI _velocity;
 
         private Sequence m_crossHairSeq;
 
@@ -31,6 +32,7 @@ namespace Game.UI
         {
             _playerPosTxt.text = ScreenDubegger.PlayerPos;
            _fps.text = ScreenDubegger.Fps;
+           _velocity.text = ScreenDubegger._velocity;
         }
 
         public void SetCrosshairState(CrosshairStates state)
@@ -72,6 +74,7 @@ namespace Game.UI
         public static string Fps;
         public static string _objectUsedDebug;
         public static string _objectInFocusDebug;
+        public static string _velocity;
 
         private static string SetPlayerPos(Vector3 pos)
         {

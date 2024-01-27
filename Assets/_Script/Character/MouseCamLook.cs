@@ -23,9 +23,12 @@ public class MouseCamLook : MonoBehaviour
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape)) _camLookActive = !_camLookActive;
+
+        Cursor.lockState = _camLookActive ? CursorLockMode.Locked : CursorLockMode.None;
         
         if (_camLookActive == false) return;
         
+        Cursor.lockState = CursorLockMode.Locked;
         var md = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         md = Vector2.Scale(md, new Vector2(sensitivity * smoothing, sensitivity * smoothing));
         m_smoothV.x = Mathf.Lerp(m_smoothV.x, md.x, 1f / smoothing);
