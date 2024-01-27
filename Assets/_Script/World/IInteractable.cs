@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 namespace Game.World.Objects
@@ -10,9 +11,9 @@ namespace Game.World.Objects
       protected InteractionStat StartStat { get; set; }
       public GameObject GetInteractionGameObject();
       
-      public void InteractStart(InteractionStat stat);
+      public void InteractStart(InteractionStat stat, Action callback = null);
 
-      public void InteractEnd(InteractionStat stat);
+      public void InteractEnd(InteractionStat stat, Action callback = null);
    }
    
    public struct InteractionStat

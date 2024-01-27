@@ -106,7 +106,6 @@ namespace Game.Character
                         m_interactionTarget = interactableComponent;
                         m_startStat = new InteractionStat(Time.time, Input.mousePosition);
                         m_interactionTarget?.InteractStart(m_startStat);
-                        ScreenDubegger._objectUsedDebug = "Started interacting with " + hit.collider.gameObject.name + " at " + m_startStat.Time;
                     }
                 }
             }
@@ -115,10 +114,14 @@ namespace Game.Character
             {
                 m_endStat = new InteractionStat(Time.time, Input.mousePosition);
                 m_interactionTarget.InteractEnd(m_endStat);
-                ScreenDubegger._objectUsedDebug = "Finished interacting with " + m_interactionTarget.GetInteractionGameObject().name + " at " + m_endStat.Time;
                 m_interactionTarget = null;
                 m_interacting = false;
             }
+        }
+
+        private void Callback()
+        {
+            throw new NotImplementedException();
         }
     }
 }

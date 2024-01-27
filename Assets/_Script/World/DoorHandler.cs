@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;using DG.Tweening;
+using Game.UI;
 using TMPro;
 using Unity.Mathematics;
 #if UNITY_EDITOR
@@ -14,6 +15,7 @@ namespace Game.World.Objects
         [Header("Door Parameters")]
         [SerializeField] private Transform _door;
         [SerializeField] private Transform _doorHandle;
+        [SerializeField] private bool _isLocked;
         private Vector2 _doorRotationRange; // LATERS
         [SerializeField] private float _torqueForce = 140;
         [SerializeField] private float _inputRangeFromCenter = 5; //get center of screen, origin +- limits. -- in pixels
@@ -62,6 +64,16 @@ namespace Game.World.Objects
             }
         }
 
+        public void SetLockedState(bool isLocked)
+        {
+            _isLocked = isLocked;
+        }
+
+        private void OnLocked()
+        {
+            ScreenDubegger._objectUsedDebug = gameObject.name + " is locked.";
+        }
+
         private void UpdateDoor()
         {
             m_input_delta = m_startStat.MousePos.x - Input.mousePosition.x;
@@ -83,15 +95,24 @@ namespace Game.World.Objects
                 _doorHandle.DOLocalRotate(isGrabbed ? Vector3.forward * 35f : Vector3.zero, 0.35f).SetEase(Ease.InOutBack));
         }
 
-        void IInteractable.InteractStart(InteractionStat stat)
+        void IInteractable.InteractStart(InteractionStat stat, Action callback)
         {
+            if (_isLocked)
+            {
+                OnLocked();
+                ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. Interaction failed. ";
+                return;
+            }
+            
+            ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + " at " + m_startStat.Time;
             m_isActive = true;
             m_startStat = stat;
             UpdateHandle(true);
         }
 
-        void IInteractable.InteractEnd(InteractionStat stat)
+        void IInteractable.InteractEnd(InteractionStat stat, Action callback)
         {
+            ScreenDubegger._objectUsedDebug = "Finished interacting with " + gameObject.name + " at " + m_endStat.Time;
             m_isActive = false;
             m_endStat = stat;
             UpdateHandle(false);

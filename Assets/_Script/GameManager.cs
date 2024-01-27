@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        throw new NotImplementedException();
+        timeleft = updateInterval;
     }
 
     void Update()
