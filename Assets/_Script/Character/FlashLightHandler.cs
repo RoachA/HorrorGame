@@ -7,6 +7,7 @@ using UnityEngine;
 public class FlashLightHandler : MonoBehaviour
 {
     [SerializeField] private Vector2 _offsetMultiplier = new Vector2(0.5f, 2f);
+    [SerializeField] private float _offsettingDuration = .5f;
     private Light m_light;
     private bool m_isObscured;
     private bool m_isOn = true;
@@ -28,7 +29,7 @@ public class FlashLightHandler : MonoBehaviour
         _seq?.Kill();
         _seq = DOTween.Sequence();
 
-        _seq.Insert(0.1f, m_light.transform.DOLocalMoveX(_offsetMultiplier.y, 0.25f));
+        _seq.Insert(0.1f, m_light.transform.DOLocalMoveX(_offsetMultiplier.y, _offsettingDuration));
     }
     
     private void OnTriggerExit(Collider other)
@@ -40,7 +41,7 @@ public class FlashLightHandler : MonoBehaviour
         _seq?.Kill();
         _seq = DOTween.Sequence();
 
-        _seq.Insert(.25f, m_light.transform.DOLocalMoveX(_offsetMultiplier.x, 0.25f));
+        _seq.Insert(.25f, m_light.transform.DOLocalMoveX(_offsetMultiplier.x, _offsettingDuration));
     }
     
     public void SwitchFlashlight()

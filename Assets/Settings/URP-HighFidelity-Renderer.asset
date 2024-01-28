@@ -40,7 +40,8 @@ MonoBehaviour:
       type: 3}
   m_RendererFeatures:
   - {fileID: -1878332245247344467}
-  m_RendererFeatureMap: adc0de57c6d2eee5
+  - {fileID: 4011598683491561975}
+  m_RendererFeatureMap: adc0de57c6d2eee5f771f08ebf0fac37
   m_UseNativeRenderPass: 0
   postProcessData: {fileID: 11400000, guid: 41439944d30ece34e96484bdb6645b55, type: 2}
   xrSystemData: {fileID: 11400000, guid: 60e1133243b97e347b653163a8c01b64, type: 2}
@@ -81,3 +82,31 @@ MonoBehaviour:
   m_ClusteredRendering: 0
   m_TileSize: 32
   m_IntermediateTextureMode: 0
+--- !u!114 &4011598683491561975
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 99efabfbdd430bd4ca9aeefd11743eb0, type: 3}
+  m_Name: VHSFeature
+  m_EditorClassIdentifier: 
+  m_Active: 1
+  Settings:
+    renderPassEvent: 550
+    _DelayAmount: 0.5
+    _DelayOffset: 0.00035
+    _ChromaOffset: -0.00025
+    _ChromaVector: {x: 30, y: 30}
+    _Sharpness: 1.49
+    _DotCrawlVector: {x: 80, y: 35}
+    _DotCrawlSpeed: 176.4
+    _DotCrawlAmount: 0.00045
+    _RingingAmount: 0.35
+    _noiseTexture: {fileID: 2800000, guid: c00fe1a01896e8243b1fae2c6157c323, type: 3}
+    _noiseDistribution: {x: 0.06, y: -0.35}
+    _NoiseAmount: 0.8
+    _NoiseSpeed: 7.21
