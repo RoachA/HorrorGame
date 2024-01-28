@@ -1948,6 +1948,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
+      propertyPath: simulationSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
       propertyPath: ShapeModule.m_Scale.x
       value: 3
       objectReference: {fileID: 0}
@@ -1968,13 +1973,23 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
+      propertyPath: InitialModule.maxNumParticles
+      value: 800
+      objectReference: {fileID: 0}
+    - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
       propertyPath: InitialModule.startSize.scalar
       value: 0.05
       objectReference: {fileID: 0}
     - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
       propertyPath: InitialModule.startSize.minScalar
-      value: 0.02
+      value: 0.1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: EmissionModule.rateOverTime.scalar
+      value: 100
       objectReference: {fileID: 0}
     - target: {fileID: 3728251377694315023, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
