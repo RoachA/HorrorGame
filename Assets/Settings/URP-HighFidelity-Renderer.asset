@@ -107,6 +107,10 @@ MonoBehaviour:
     _DotCrawlAmount: 0.00045
     _RingingAmount: 0.35
     _noiseTexture: {fileID: 2800000, guid: c00fe1a01896e8243b1fae2c6157c323, type: 3}
-    _noiseDistribution: {x: 0.06, y: -0.35}
-    _NoiseAmount: 0.8
-    _NoiseSpeed: 7.21
+    _noiseDistribution: {x: 0.05, y: -0.45}
+    _NoiseAmount: 0.49
+    _NoiseSpeed: 1
+    _MosaicSize: 400
+    _Compression: 0.05
+    _MosaicDistribution: {x: 10, y: 0.49}
+    _SobelStep: {x: 0.001, y: 0.001}

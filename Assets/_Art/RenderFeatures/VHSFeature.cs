@@ -1,4 +1,3 @@
-using Game.UI;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
@@ -29,6 +28,12 @@ public class VHSFeature : ScriptableRendererFeature
         public Vector2 _noiseDistribution = new Vector2(0, 1);
         public float _NoiseAmount = 0.02f;
         public float _NoiseSpeed = 1.0f;
+
+        [Header("Spatial Mosaic Artifacts")]
+        public float _MosaicSize = 10;
+        public float _Compression = 0.1f;
+        public Vector2 _MosaicDistribution = new Vector2(0, 1);
+        public Vector2 _SobelStep = new Vector2(0.001f, 0.001f);
     }
 
     [SerializeField] private VHSSettings Settings;
@@ -83,6 +88,11 @@ class VHSPass : ScriptableRenderPass
         vhsMat.SetVector("_NoiseDistribution", settings._noiseDistribution);
         vhsMat.SetFloat("_NoiseAmount", settings._NoiseAmount);
         vhsMat.SetFloat("_NoiseSpeed", settings._NoiseSpeed);
+        
+        vhsMat.SetVector("_SobelStep", settings._SobelStep);
+        vhsMat.SetFloat("_MosaicSize", settings._MosaicSize);
+        vhsMat.SetFloat("_Compression", settings._Compression);
+        vhsMat.SetVector("_MosaicDistribution", settings._MosaicDistribution);
 
         descriptor.height = Screen.height;
         descriptor.width = Screen.width;
