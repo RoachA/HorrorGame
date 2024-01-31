@@ -1,6 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
@@ -8,17 +6,63 @@ public class FlashLightHandler : MonoBehaviour
 {
     [SerializeField] private Vector2 _offsetMultiplier = new Vector2(0.5f, 2f);
     [SerializeField] private float _offsettingDuration = .5f;
+    [SerializeField] private FlashLightParam _defaultParams;
+    [SerializeField] private FlashLightParam _focusedParams;
     private Light m_light;
     private bool m_isObscured;
     private bool m_isOn = true;
-    private const float m_litIntensity = 9;
+    private const float m_defaultIntensity = 9;
     private Sequence _seq;
+    private Sequence _focusSeq;
     private Sequence _jitterSeq;
+
+    [Serializable]
+    private struct FlashLightParam
+    {
+        public Vector2 ConeRanges;
+        public float Intensity;
+        public float Range;
+    }
+    
     private void Start()
     {
         m_light = GetComponentInChildren<Light>();
+        SetLightParam(false);
     }
 
+    public void SetLightParam(bool isFocused)
+    {
+        _focusSeq.Kill();
+        _focusSeq = DOTween.Sequence();
+
+        _focusSeq.Insert(0, DOVirtual.Float(m_light.innerSpotAngle,
+            isFocused ? _focusedParams.ConeRanges.x : _defaultParams.ConeRanges.x, 0.5f,
+            a =>
+            {
+                m_light.innerSpotAngle = a;
+            }));
+        
+        _focusSeq.Insert(0, DOVirtual.Float(m_light.spotAngle,
+            isFocused ? _focusedParams.ConeRanges.y : _defaultParams.ConeRanges.y, 0.5f,
+            a =>
+            {
+                m_light.spotAngle = a;
+            }));
+        
+        _focusSeq.Insert(0, DOVirtual.Float(m_light.range,
+            isFocused ? _focusedParams.Range : _defaultParams.Range, 0.5f,
+            a =>
+            {
+                m_light.range = a;
+            }));
+        
+        _focusSeq.Insert(0, DOVirtual.Float(m_light.intensity,
+            isFocused ? _focusedParams.Intensity : _defaultParams.Intensity, 0.5f,
+            a =>
+            {
+                m_light.intensity = a;
+            }));
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -48,7 +92,7 @@ public class FlashLightHandler : MonoBehaviour
     {
         m_isOn = !m_isOn;
         
-        m_light.intensity = m_isOn ? m_litIntensity : 0;
+        m_light.intensity = m_isOn ? _defaultParams.Intensity : 0;
     }
 
     [Sirenix.OdinInspector.Button]
@@ -71,6 +115,6 @@ public class FlashLightHandler : MonoBehaviour
     public void StopJitter()
     {
        _jitterSeq?.Kill(true);
-       m_light.intensity = m_litIntensity;
+       m_light.intensity = _defaultParams.Intensity;
     }
 }

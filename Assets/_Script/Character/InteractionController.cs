@@ -19,6 +19,7 @@ namespace Game.Character
         private InteractionStat m_startStat;
         private InteractionStat m_endStat;
 
+        [SerializeField] private MouseCamLook _mouseCamController;
         [SerializeField] private GameplayPanelUi _gameplayUI;
         [SerializeField] private bool _isDebugging;
 
@@ -34,10 +35,11 @@ namespace Game.Character
             Observe();
             CheckAndInteract();
             HandleUI();
+         
             
             if (_isDebugging) OnDebugActive();
         }
-
+        
         private void OnDebugActive()
         {
             Ray observerRay = m_cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -103,6 +105,9 @@ namespace Game.Character
 
                     if (m_interacting && m_interactionTarget == null)
                     {
+                        Cursor.lockState = CursorLockMode.Confined;
+                        _mouseCamController.SetFocusMode(true);
+                        
                         m_interactionTarget = interactableComponent;
                         m_startStat = new InteractionStat(Time.time, Input.mousePosition);
                         m_interactionTarget?.InteractStart(m_startStat);
@@ -112,6 +117,8 @@ namespace Game.Character
 
             if (Input.GetMouseButtonUp(0) && m_interactionTarget != null)
             {
+                Cursor.lockState = CursorLockMode.Locked;
+                _mouseCamController.SetFocusMode(false);
                 m_endStat = new InteractionStat(Time.time, Input.mousePosition);
                 m_interactionTarget.InteractEnd(m_endStat);
                 m_interactionTarget = null;

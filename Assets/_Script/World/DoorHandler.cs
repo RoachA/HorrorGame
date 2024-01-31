@@ -84,6 +84,8 @@ namespace Game.World.Objects
 
         private void UpdateDoor()
         {
+            //mouse pos shits in pants. we need to do something else. or always ensure that mouse is centered. todo rekt 
+            //todo instead of mouse pos. we gotta use character x I guess.
             m_input_delta = m_startStat.MousePos.x - Input.mousePosition.x;
             var distanceDelta = Vector2.Distance(m_startStat.MousePos, Input.mousePosition);
             var clampedDelta = Mathf.Clamp(distanceDelta, -_inputRangeFromCenter, _inputRangeFromCenter);
