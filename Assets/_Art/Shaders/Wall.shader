@@ -250,6 +250,7 @@ Shader "Custom/Wall"
 			#endif
 
 			#define ASE_NEEDS_FRAG_POSITION
+			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local _USEWORLDSPACE_ON
 
@@ -573,28 +574,47 @@ Shader "Custom/Wall"
 				float4 lerpResult90 = lerp( tex2DNode10 , ( tex2DNode10 * _Paint ) , ( _Paint.a * smoothstepResult91 ));
 				float4 temp_cast_0 = (_NoiseMapDefiniton.x).xxxx;
 				float4 temp_cast_1 = (_NoiseMapDefiniton.y).xxxx;
-				float4 transform83 = mul(GetWorldToObjectMatrix(),float4( WorldPosition , 0.0 ));
+				float2 appendResult109 = (float2(IN.ase_texcoord9.xyz.z , IN.ase_texcoord9.xyz.y));
+				float2 temp_output_115_0 = ( _MaskTile * float2( 2,2 ) );
+				float2 appendResult110 = (float2(IN.ase_texcoord9.xyz.x , IN.ase_texcoord9.xyz.y));
+				float3 normalizedWorldNormal = normalize( WorldNormal );
+				float worldNormalX105 = abs( normalizedWorldNormal.x );
+				float4 lerpResult122 = lerp( tex2D( _NoiseMask, (appendResult109*temp_output_115_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult110*temp_output_115_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult124 = lerp( tex2D( _NoiseMask, (appendResult109*_MaskTile + 0.0) ) , tex2D( _NoiseMask, (appendResult110*_MaskTile + 0.0) ) , worldNormalX105);
+				float4 transform154 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult139 = dot( float4( WorldPosition , 0.0 ) , transform154 );
+				float4 transform133 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult134 = dot( float4( WorldPosition , 0.0 ) , transform133 );
+				float2 appendResult137 = (float2(dotResult139 , dotResult134));
+				float2 temp_output_46_0 = ( _MaskTile * float2( 2,2 ) );
+				float4 transform142 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult145 = dot( float4( WorldPosition , 0.0 ) , transform142 );
+				float4 transform153 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult148 = dot( float4( WorldPosition , 0.0 ) , transform153 );
+				float2 appendResult143 = (float2(dotResult145 , dotResult148));
+				float4 lerpResult103 = lerp( tex2D( _NoiseMask, (appendResult137*temp_output_46_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult143*temp_output_46_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult111 = lerp( tex2D( _NoiseMask, (appendResult137*_MaskTile + 1.0) ) , tex2D( _NoiseMask, (appendResult143*_MaskTile + 1.0) ) , worldNormalX105);
 				#ifdef _USEWORLDSPACE_ON
-				float4 staticSwitch88 = transform83;
+				float4 staticSwitch88 = saturate( ( lerpResult103 * lerpResult111 ) );
 				#else
-				float4 staticSwitch88 = float4( IN.ase_texcoord9.xyz , 0.0 );
+				float4 staticSwitch88 = saturate( ( lerpResult122 * lerpResult124 ) );
 				#endif
-				float4 Noise_Mask32 = saturate( ( tex2D( _NoiseMask, (staticSwitch88*float4( ( _MaskTile * float2( 2,2 ) ), 0.0 , 0.0 ) + 0.0).xy ) * tex2D( _NoiseMask, (staticSwitch88*float4( _MaskTile, 0.0 , 0.0 ) + 1.0).xy ) ) );
+				float4 Noise_Mask32 = staticSwitch88;
 				float4 smoothstepResult35 = smoothstep( temp_cast_0 , temp_cast_1 , Noise_Mask32);
 				float lerpResult17 = lerp( smoothstepResult35.g , 1.0 , ( _BMaskOffset + WorldPosition.y ));
 				float lerpResult14 = lerp( 1.0 , smoothstepResult35.g , ( WorldPosition.y + _TMaskOffset ));
 				float smoothstepResult28 = smoothstep( _VerticalMapSharpness.x , _VerticalMapSharpness.y , ( lerpResult17 * lerpResult14 ));
 				float4 lerpResult23 = lerp( tex2D( _EdgeTexture, uv_EdgeTexture ) , lerpResult90 , saturate( smoothstepResult28 ));
 				float smoothstepResult68 = smoothstep( _LeakDefiniton.x , _LeakDefiniton.y , Noise_Mask32.g);
-				float4 temp_cast_8 = (_LeakDefiniton.x).xxxx;
-				float4 temp_cast_9 = (_LeakDefiniton.y).xxxx;
-				float4 smoothstepResult62 = smoothstep( temp_cast_8 , temp_cast_9 , tex2D( _LeakMask, (IN.ase_texcoord9.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
+				float4 temp_cast_6 = (_LeakDefiniton.x).xxxx;
+				float4 temp_cast_7 = (_LeakDefiniton.y).xxxx;
+				float4 smoothstepResult62 = smoothstep( temp_cast_6 , temp_cast_7 , tex2D( _LeakMask, (IN.ase_texcoord9.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
 				float4 Leak_Mask59 = saturate( ( smoothstepResult68 + smoothstepResult62 ) );
 				float4 lerpResult71 = lerp( ( _LeakColoration * lerpResult23 ) , lerpResult23 , Leak_Mask59);
 				
-				float4 temp_cast_13 = (_SmoothnessStep.x).xxxx;
-				float4 temp_cast_14 = (_SmoothnessStep.y).xxxx;
-				float4 smoothstepResult54 = smoothstep( temp_cast_13 , temp_cast_14 , lerpResult71);
+				float4 temp_cast_11 = (_SmoothnessStep.x).xxxx;
+				float4 temp_cast_12 = (_SmoothnessStep.y).xxxx;
+				float4 smoothstepResult54 = smoothstep( temp_cast_11 , temp_cast_12 , lerpResult71);
 				
 
 				float3 BaseColor = lerpResult71.rgb;
@@ -1455,6 +1475,7 @@ Shader "Custom/Wall"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#define ASE_NEEDS_FRAG_POSITION
+			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local _USEWORLDSPACE_ON
 
@@ -1485,6 +1506,7 @@ Shader "Custom/Wall"
 				#endif
 				float4 ase_texcoord4 : TEXCOORD4;
 				float4 ase_texcoord5 : TEXCOORD5;
+				float4 ase_texcoord6 : TEXCOORD6;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1558,11 +1580,15 @@ Shader "Custom/Wall"
 				UNITY_TRANSFER_INSTANCE_ID(v, o);
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(o);
 
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				o.ase_texcoord6.xyz = ase_worldNormal;
+				
 				o.ase_texcoord4.xy = v.texcoord0.xy;
 				o.ase_texcoord5 = v.vertex;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord4.zw = 0;
+				o.ase_texcoord6.w = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
@@ -1720,22 +1746,42 @@ Shader "Custom/Wall"
 				float4 lerpResult90 = lerp( tex2DNode10 , ( tex2DNode10 * _Paint ) , ( _Paint.a * smoothstepResult91 ));
 				float4 temp_cast_0 = (_NoiseMapDefiniton.x).xxxx;
 				float4 temp_cast_1 = (_NoiseMapDefiniton.y).xxxx;
-				float4 transform83 = mul(GetWorldToObjectMatrix(),float4( WorldPosition , 0.0 ));
+				float2 appendResult109 = (float2(IN.ase_texcoord5.xyz.z , IN.ase_texcoord5.xyz.y));
+				float2 temp_output_115_0 = ( _MaskTile * float2( 2,2 ) );
+				float2 appendResult110 = (float2(IN.ase_texcoord5.xyz.x , IN.ase_texcoord5.xyz.y));
+				float3 ase_worldNormal = IN.ase_texcoord6.xyz;
+				float3 normalizedWorldNormal = normalize( ase_worldNormal );
+				float worldNormalX105 = abs( normalizedWorldNormal.x );
+				float4 lerpResult122 = lerp( tex2D( _NoiseMask, (appendResult109*temp_output_115_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult110*temp_output_115_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult124 = lerp( tex2D( _NoiseMask, (appendResult109*_MaskTile + 0.0) ) , tex2D( _NoiseMask, (appendResult110*_MaskTile + 0.0) ) , worldNormalX105);
+				float4 transform154 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult139 = dot( float4( WorldPosition , 0.0 ) , transform154 );
+				float4 transform133 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult134 = dot( float4( WorldPosition , 0.0 ) , transform133 );
+				float2 appendResult137 = (float2(dotResult139 , dotResult134));
+				float2 temp_output_46_0 = ( _MaskTile * float2( 2,2 ) );
+				float4 transform142 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult145 = dot( float4( WorldPosition , 0.0 ) , transform142 );
+				float4 transform153 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult148 = dot( float4( WorldPosition , 0.0 ) , transform153 );
+				float2 appendResult143 = (float2(dotResult145 , dotResult148));
+				float4 lerpResult103 = lerp( tex2D( _NoiseMask, (appendResult137*temp_output_46_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult143*temp_output_46_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult111 = lerp( tex2D( _NoiseMask, (appendResult137*_MaskTile + 1.0) ) , tex2D( _NoiseMask, (appendResult143*_MaskTile + 1.0) ) , worldNormalX105);
 				#ifdef _USEWORLDSPACE_ON
-				float4 staticSwitch88 = transform83;
+				float4 staticSwitch88 = saturate( ( lerpResult103 * lerpResult111 ) );
 				#else
-				float4 staticSwitch88 = float4( IN.ase_texcoord5.xyz , 0.0 );
+				float4 staticSwitch88 = saturate( ( lerpResult122 * lerpResult124 ) );
 				#endif
-				float4 Noise_Mask32 = saturate( ( tex2D( _NoiseMask, (staticSwitch88*float4( ( _MaskTile * float2( 2,2 ) ), 0.0 , 0.0 ) + 0.0).xy ) * tex2D( _NoiseMask, (staticSwitch88*float4( _MaskTile, 0.0 , 0.0 ) + 1.0).xy ) ) );
+				float4 Noise_Mask32 = staticSwitch88;
 				float4 smoothstepResult35 = smoothstep( temp_cast_0 , temp_cast_1 , Noise_Mask32);
 				float lerpResult17 = lerp( smoothstepResult35.g , 1.0 , ( _BMaskOffset + WorldPosition.y ));
 				float lerpResult14 = lerp( 1.0 , smoothstepResult35.g , ( WorldPosition.y + _TMaskOffset ));
 				float smoothstepResult28 = smoothstep( _VerticalMapSharpness.x , _VerticalMapSharpness.y , ( lerpResult17 * lerpResult14 ));
 				float4 lerpResult23 = lerp( tex2D( _EdgeTexture, uv_EdgeTexture ) , lerpResult90 , saturate( smoothstepResult28 ));
 				float smoothstepResult68 = smoothstep( _LeakDefiniton.x , _LeakDefiniton.y , Noise_Mask32.g);
-				float4 temp_cast_8 = (_LeakDefiniton.x).xxxx;
-				float4 temp_cast_9 = (_LeakDefiniton.y).xxxx;
-				float4 smoothstepResult62 = smoothstep( temp_cast_8 , temp_cast_9 , tex2D( _LeakMask, (IN.ase_texcoord5.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
+				float4 temp_cast_6 = (_LeakDefiniton.x).xxxx;
+				float4 temp_cast_7 = (_LeakDefiniton.y).xxxx;
+				float4 smoothstepResult62 = smoothstep( temp_cast_6 , temp_cast_7 , tex2D( _LeakMask, (IN.ase_texcoord5.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
 				float4 Leak_Mask59 = saturate( ( smoothstepResult68 + smoothstepResult62 ) );
 				float4 lerpResult71 = lerp( ( _LeakColoration * lerpResult23 ) , lerpResult23 , Leak_Mask59);
 				
@@ -1797,6 +1843,7 @@ Shader "Custom/Wall"
 			#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/ShaderPass.hlsl"
 
 			#define ASE_NEEDS_FRAG_POSITION
+			#define ASE_NEEDS_VERT_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local _USEWORLDSPACE_ON
 
@@ -1820,6 +1867,7 @@ Shader "Custom/Wall"
 				#endif
 				float4 ase_texcoord2 : TEXCOORD2;
 				float4 ase_texcoord3 : TEXCOORD3;
+				float4 ase_texcoord4 : TEXCOORD4;
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 				UNITY_VERTEX_OUTPUT_STEREO
 			};
@@ -1893,11 +1941,15 @@ Shader "Custom/Wall"
 				UNITY_TRANSFER_INSTANCE_ID( v, o );
 				UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO( o );
 
+				float3 ase_worldNormal = TransformObjectToWorldNormal(v.ase_normal);
+				o.ase_texcoord4.xyz = ase_worldNormal;
+				
 				o.ase_texcoord2.xy = v.ase_texcoord.xy;
 				o.ase_texcoord3 = v.vertex;
 				
 				//setting value to unused interpolator channels and avoid initialization warnings
 				o.ase_texcoord2.zw = 0;
+				o.ase_texcoord4.w = 0;
 
 				#ifdef ASE_ABSOLUTE_VERTEX_POS
 					float3 defaultVertexValue = v.vertex.xyz;
@@ -2040,22 +2092,42 @@ Shader "Custom/Wall"
 				float4 lerpResult90 = lerp( tex2DNode10 , ( tex2DNode10 * _Paint ) , ( _Paint.a * smoothstepResult91 ));
 				float4 temp_cast_0 = (_NoiseMapDefiniton.x).xxxx;
 				float4 temp_cast_1 = (_NoiseMapDefiniton.y).xxxx;
-				float4 transform83 = mul(GetWorldToObjectMatrix(),float4( WorldPosition , 0.0 ));
+				float2 appendResult109 = (float2(IN.ase_texcoord3.xyz.z , IN.ase_texcoord3.xyz.y));
+				float2 temp_output_115_0 = ( _MaskTile * float2( 2,2 ) );
+				float2 appendResult110 = (float2(IN.ase_texcoord3.xyz.x , IN.ase_texcoord3.xyz.y));
+				float3 ase_worldNormal = IN.ase_texcoord4.xyz;
+				float3 normalizedWorldNormal = normalize( ase_worldNormal );
+				float worldNormalX105 = abs( normalizedWorldNormal.x );
+				float4 lerpResult122 = lerp( tex2D( _NoiseMask, (appendResult109*temp_output_115_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult110*temp_output_115_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult124 = lerp( tex2D( _NoiseMask, (appendResult109*_MaskTile + 0.0) ) , tex2D( _NoiseMask, (appendResult110*_MaskTile + 0.0) ) , worldNormalX105);
+				float4 transform154 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult139 = dot( float4( WorldPosition , 0.0 ) , transform154 );
+				float4 transform133 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult134 = dot( float4( WorldPosition , 0.0 ) , transform133 );
+				float2 appendResult137 = (float2(dotResult139 , dotResult134));
+				float2 temp_output_46_0 = ( _MaskTile * float2( 2,2 ) );
+				float4 transform142 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult145 = dot( float4( WorldPosition , 0.0 ) , transform142 );
+				float4 transform153 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult148 = dot( float4( WorldPosition , 0.0 ) , transform153 );
+				float2 appendResult143 = (float2(dotResult145 , dotResult148));
+				float4 lerpResult103 = lerp( tex2D( _NoiseMask, (appendResult137*temp_output_46_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult143*temp_output_46_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult111 = lerp( tex2D( _NoiseMask, (appendResult137*_MaskTile + 1.0) ) , tex2D( _NoiseMask, (appendResult143*_MaskTile + 1.0) ) , worldNormalX105);
 				#ifdef _USEWORLDSPACE_ON
-				float4 staticSwitch88 = transform83;
+				float4 staticSwitch88 = saturate( ( lerpResult103 * lerpResult111 ) );
 				#else
-				float4 staticSwitch88 = float4( IN.ase_texcoord3.xyz , 0.0 );
+				float4 staticSwitch88 = saturate( ( lerpResult122 * lerpResult124 ) );
 				#endif
-				float4 Noise_Mask32 = saturate( ( tex2D( _NoiseMask, (staticSwitch88*float4( ( _MaskTile * float2( 2,2 ) ), 0.0 , 0.0 ) + 0.0).xy ) * tex2D( _NoiseMask, (staticSwitch88*float4( _MaskTile, 0.0 , 0.0 ) + 1.0).xy ) ) );
+				float4 Noise_Mask32 = staticSwitch88;
 				float4 smoothstepResult35 = smoothstep( temp_cast_0 , temp_cast_1 , Noise_Mask32);
 				float lerpResult17 = lerp( smoothstepResult35.g , 1.0 , ( _BMaskOffset + WorldPosition.y ));
 				float lerpResult14 = lerp( 1.0 , smoothstepResult35.g , ( WorldPosition.y + _TMaskOffset ));
 				float smoothstepResult28 = smoothstep( _VerticalMapSharpness.x , _VerticalMapSharpness.y , ( lerpResult17 * lerpResult14 ));
 				float4 lerpResult23 = lerp( tex2D( _EdgeTexture, uv_EdgeTexture ) , lerpResult90 , saturate( smoothstepResult28 ));
 				float smoothstepResult68 = smoothstep( _LeakDefiniton.x , _LeakDefiniton.y , Noise_Mask32.g);
-				float4 temp_cast_8 = (_LeakDefiniton.x).xxxx;
-				float4 temp_cast_9 = (_LeakDefiniton.y).xxxx;
-				float4 smoothstepResult62 = smoothstep( temp_cast_8 , temp_cast_9 , tex2D( _LeakMask, (IN.ase_texcoord3.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
+				float4 temp_cast_6 = (_LeakDefiniton.x).xxxx;
+				float4 temp_cast_7 = (_LeakDefiniton.y).xxxx;
+				float4 smoothstepResult62 = smoothstep( temp_cast_6 , temp_cast_7 , tex2D( _LeakMask, (IN.ase_texcoord3.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
 				float4 Leak_Mask59 = saturate( ( smoothstepResult68 + smoothstepResult62 ) );
 				float4 lerpResult71 = lerp( ( _LeakColoration * lerpResult23 ) , lerpResult23 , Leak_Mask59);
 				
@@ -2472,6 +2544,7 @@ Shader "Custom/Wall"
 			#endif
 
 			#define ASE_NEEDS_FRAG_POSITION
+			#define ASE_NEEDS_FRAG_WORLD_NORMAL
 			#define ASE_NEEDS_FRAG_WORLD_POSITION
 			#pragma shader_feature_local _USEWORLDSPACE_ON
 
@@ -2788,28 +2861,47 @@ Shader "Custom/Wall"
 				float4 lerpResult90 = lerp( tex2DNode10 , ( tex2DNode10 * _Paint ) , ( _Paint.a * smoothstepResult91 ));
 				float4 temp_cast_0 = (_NoiseMapDefiniton.x).xxxx;
 				float4 temp_cast_1 = (_NoiseMapDefiniton.y).xxxx;
-				float4 transform83 = mul(GetWorldToObjectMatrix(),float4( WorldPosition , 0.0 ));
+				float2 appendResult109 = (float2(IN.ase_texcoord9.xyz.z , IN.ase_texcoord9.xyz.y));
+				float2 temp_output_115_0 = ( _MaskTile * float2( 2,2 ) );
+				float2 appendResult110 = (float2(IN.ase_texcoord9.xyz.x , IN.ase_texcoord9.xyz.y));
+				float3 normalizedWorldNormal = normalize( WorldNormal );
+				float worldNormalX105 = abs( normalizedWorldNormal.x );
+				float4 lerpResult122 = lerp( tex2D( _NoiseMask, (appendResult109*temp_output_115_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult110*temp_output_115_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult124 = lerp( tex2D( _NoiseMask, (appendResult109*_MaskTile + 0.0) ) , tex2D( _NoiseMask, (appendResult110*_MaskTile + 0.0) ) , worldNormalX105);
+				float4 transform154 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult139 = dot( float4( WorldPosition , 0.0 ) , transform154 );
+				float4 transform133 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult134 = dot( float4( WorldPosition , 0.0 ) , transform133 );
+				float2 appendResult137 = (float2(dotResult139 , dotResult134));
+				float2 temp_output_46_0 = ( _MaskTile * float2( 2,2 ) );
+				float4 transform142 = mul(GetObjectToWorldMatrix(),float4( 1,0,1,0 ));
+				float dotResult145 = dot( float4( WorldPosition , 0.0 ) , transform142 );
+				float4 transform153 = mul(GetObjectToWorldMatrix(),float4( 0,1,0,0 ));
+				float dotResult148 = dot( float4( WorldPosition , 0.0 ) , transform153 );
+				float2 appendResult143 = (float2(dotResult145 , dotResult148));
+				float4 lerpResult103 = lerp( tex2D( _NoiseMask, (appendResult137*temp_output_46_0 + 0.0) ) , tex2D( _NoiseMask, (appendResult143*temp_output_46_0 + 0.0) ) , worldNormalX105);
+				float4 lerpResult111 = lerp( tex2D( _NoiseMask, (appendResult137*_MaskTile + 1.0) ) , tex2D( _NoiseMask, (appendResult143*_MaskTile + 1.0) ) , worldNormalX105);
 				#ifdef _USEWORLDSPACE_ON
-				float4 staticSwitch88 = transform83;
+				float4 staticSwitch88 = saturate( ( lerpResult103 * lerpResult111 ) );
 				#else
-				float4 staticSwitch88 = float4( IN.ase_texcoord9.xyz , 0.0 );
+				float4 staticSwitch88 = saturate( ( lerpResult122 * lerpResult124 ) );
 				#endif
-				float4 Noise_Mask32 = saturate( ( tex2D( _NoiseMask, (staticSwitch88*float4( ( _MaskTile * float2( 2,2 ) ), 0.0 , 0.0 ) + 0.0).xy ) * tex2D( _NoiseMask, (staticSwitch88*float4( _MaskTile, 0.0 , 0.0 ) + 1.0).xy ) ) );
+				float4 Noise_Mask32 = staticSwitch88;
 				float4 smoothstepResult35 = smoothstep( temp_cast_0 , temp_cast_1 , Noise_Mask32);
 				float lerpResult17 = lerp( smoothstepResult35.g , 1.0 , ( _BMaskOffset + WorldPosition.y ));
 				float lerpResult14 = lerp( 1.0 , smoothstepResult35.g , ( WorldPosition.y + _TMaskOffset ));
 				float smoothstepResult28 = smoothstep( _VerticalMapSharpness.x , _VerticalMapSharpness.y , ( lerpResult17 * lerpResult14 ));
 				float4 lerpResult23 = lerp( tex2D( _EdgeTexture, uv_EdgeTexture ) , lerpResult90 , saturate( smoothstepResult28 ));
 				float smoothstepResult68 = smoothstep( _LeakDefiniton.x , _LeakDefiniton.y , Noise_Mask32.g);
-				float4 temp_cast_8 = (_LeakDefiniton.x).xxxx;
-				float4 temp_cast_9 = (_LeakDefiniton.y).xxxx;
-				float4 smoothstepResult62 = smoothstep( temp_cast_8 , temp_cast_9 , tex2D( _LeakMask, (IN.ase_texcoord9.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
+				float4 temp_cast_6 = (_LeakDefiniton.x).xxxx;
+				float4 temp_cast_7 = (_LeakDefiniton.y).xxxx;
+				float4 smoothstepResult62 = smoothstep( temp_cast_6 , temp_cast_7 , tex2D( _LeakMask, (IN.ase_texcoord9.xyz*float3( _LeakTile ,  0.0 ) + 0.0).xy ));
 				float4 Leak_Mask59 = saturate( ( smoothstepResult68 + smoothstepResult62 ) );
 				float4 lerpResult71 = lerp( ( _LeakColoration * lerpResult23 ) , lerpResult23 , Leak_Mask59);
 				
-				float4 temp_cast_13 = (_SmoothnessStep.x).xxxx;
-				float4 temp_cast_14 = (_SmoothnessStep.y).xxxx;
-				float4 smoothstepResult54 = smoothstep( temp_cast_13 , temp_cast_14 , lerpResult71);
+				float4 temp_cast_11 = (_SmoothnessStep.x).xxxx;
+				float4 temp_cast_12 = (_SmoothnessStep.y).xxxx;
+				float4 smoothstepResult54 = smoothstep( temp_cast_11 , temp_cast_12 , lerpResult71);
 				
 
 				float3 BaseColor = lerpResult71.rgb;
@@ -3448,8 +3540,9 @@ Shader "Custom/Wall"
 }
 /*ASEBEGIN
 Version=19200
+Node;AmplifyShaderEditor.CommentaryNode;129;-2847.1,2339.504;Inherit;False;1999.037;1029.078;Comment;15;112;113;116;117;120;121;124;122;119;118;126;127;128;109;110;Noise Randomization Seed Object;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;78;-3018.671,-514.1005;Inherit;False;2149.825;671;Comment;12;58;56;63;57;61;62;69;70;64;66;68;59;Leakage;1,1,1,1;0;0
-Node;AmplifyShaderEditor.CommentaryNode;50;-2735.002,1242.253;Inherit;False;1924.054;565.5742;Comment;10;31;40;42;47;32;45;49;48;46;84;Noise Randomization Seed;1,1,1,1;0;0
+Node;AmplifyShaderEditor.CommentaryNode;50;-2749.666,1235.51;Inherit;False;2519.803;973.5754;Comment;18;100;115;46;40;99;111;108;47;107;32;49;48;103;31;98;42;45;88;Noise Randomization Seed - WORLD;1,1,1,1;0;0
 Node;AmplifyShaderEditor.CommentaryNode;30;-2801.852,249.0463;Inherit;False;1950.927;880.6047;Comment;15;27;21;20;29;28;19;11;17;14;33;34;35;36;43;44;Vertical MAsking;1,1,1,1;0;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;0;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ExtraPrePass;0;0;ExtraPrePass;5;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;True;1;1;False;;0;False;;0;1;False;;0;False;;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;True;True;True;True;0;False;;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;0;False;False;0;;0;0;Standard;0;False;0
 Node;AmplifyShaderEditor.TemplateMultiPassMasterNode;2;0,0;Float;False;False;-1;2;UnityEditor.ShaderGraphLitGUI;0;12;New Amplify Shader;94348b07e5e8bab40bd6c8a1e3df54cd;True;ShadowCaster;0;2;ShadowCaster;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;True;0;False;;False;False;False;False;False;False;False;False;False;True;False;0;False;;255;False;;255;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;0;False;;False;True;1;False;;True;3;False;;True;True;0;False;;0;False;;True;4;RenderPipeline=UniversalPipeline;RenderType=Opaque=RenderType;Queue=Geometry=Queue=0;UniversalMaterialType=Lit;True;3;True;12;all;0;False;False;False;False;False;False;False;False;False;False;False;False;True;0;False;;False;False;False;True;False;False;False;False;0;False;;False;False;False;False;False;False;False;False;False;True;1;False;;True;3;False;;False;True;1;LightMode=ShadowCaster;False;False;0;;0;0;Standard;0;False;0
@@ -3473,13 +3566,6 @@ Node;AmplifyShaderEditor.RangedFloatNode;20;-2674.932,309.6192;Inherit;False;Pro
 Node;AmplifyShaderEditor.RangedFloatNode;21;-2667.481,682.5285;Inherit;False;Property;_TMaskOffset;T Mask Offset;2;0;Create;True;0;0;0;False;0;False;0;-1.71;0;0;0;1;FLOAT;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;43;-1722.57,500.3338;Inherit;True;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.GetLocalVarNode;33;-2771.616,825.642;Inherit;False;32;Noise Mask;1;0;OBJECT;;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;31;-1988.87,1294.175;Inherit;True;Property;_NoiseMask;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.ScaleAndOffsetNode;42;-2258.11,1430.95;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;1,0,0,0;False;2;FLOAT;0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.ScaleAndOffsetNode;47;-2272.241,1611.079;Inherit;False;3;0;FLOAT4;0,0,0,0;False;1;FLOAT4;1,0,0,0;False;2;FLOAT;1;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.RegisterLocalVarNode;32;-1052.948,1292.253;Inherit;False;Noise Mask;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;45;-1976.206,1580.827;Inherit;True;Property;_NoiseMask1;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SaturateNode;49;-1288.577,1387.112;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;48;-1590.835,1389.132;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.Vector2Node;55;149.771,496.3958;Inherit;False;Property;_SmoothnessStep;Smoothness Step;11;1;[Header];Create;True;2;LIGHTING____________;__;0;0;False;0;False;0,1;0.17,1;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.SmoothstepOpNode;35;-2476.789,882.9641;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.RangedFloatNode;75;1077.984,176.0063;Inherit;False;Property;_Metallicness;Metallicness;16;0;Create;True;0;0;0;False;0;False;0;0.25;0;0;0;1;FLOAT;0
@@ -3496,16 +3582,7 @@ Node;AmplifyShaderEditor.GetLocalVarNode;64;-2502.385,-422.1004;Inherit;False;32
 Node;AmplifyShaderEditor.BreakToComponentsNode;66;-2299.385,-464.1004;Inherit;True;COLOR;1;0;COLOR;0,0,0,0;False;16;FLOAT;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4;FLOAT;5;FLOAT;6;FLOAT;7;FLOAT;8;FLOAT;9;FLOAT;10;FLOAT;11;FLOAT;12;FLOAT;13;FLOAT;14;FLOAT;15
 Node;AmplifyShaderEditor.SmoothstepOpNode;68;-1879.615,-434.0293;Inherit;False;3;0;FLOAT;0;False;1;FLOAT;0.01;False;2;FLOAT;0.05;False;1;FLOAT;0
 Node;AmplifyShaderEditor.RegisterLocalVarNode;59;-1110.846,-174.6136;Inherit;False;Leak Mask;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
-Node;AmplifyShaderEditor.SamplerNode;76;-2610.601,-853.0554;Inherit;True;Property;_TextureSample0;Texture Sample 0;17;1;[Header];Create;True;2;OVERALL TEXTURE___;____;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.Vector2Node;40;-2701.002,1603.859;Inherit;False;Property;_MaskTile;Mask Tile;10;0;Create;True;0;0;0;False;0;False;1,1;1.2,1.02;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
 Node;AmplifyShaderEditor.WorldPosInputsNode;11;-2667.781,479.173;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.RegisterLocalVarNode;84;-2480.37,1309.102;Inherit;False;world2obj;-1;True;1;0;FLOAT4;0,0,0,0;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.GetLocalVarNode;85;-3019.486,-894.7754;Inherit;False;84;world2obj;1;0;OBJECT;;False;1;FLOAT4;0
-Node;AmplifyShaderEditor.WorldPosInputsNode;41;-3322.11,1366.95;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
-Node;AmplifyShaderEditor.WorldToObjectTransfNode;83;-3112.895,1363.464;Inherit;False;1;0;FLOAT4;0,0,0,1;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.PosVertexDataNode;86;-3109.139,1571.183;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
-Node;AmplifyShaderEditor.SimpleMultiplyOpNode;46;-2507.71,1517.9;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;2,2;False;1;FLOAT2;0
-Node;AmplifyShaderEditor.StaticSwitch;88;-2774.139,1359.183;Inherit;False;Property;_UseWorldSpace;Use World Space;18;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;FLOAT4;0,0,0,0;False;0;FLOAT4;0,0,0,0;False;2;FLOAT4;0,0,0,0;False;3;FLOAT4;0,0,0,0;False;4;FLOAT4;0,0,0,0;False;5;FLOAT4;0,0,0,0;False;6;FLOAT4;0,0,0,0;False;7;FLOAT4;0,0,0,0;False;8;FLOAT4;0,0,0,0;False;1;FLOAT4;0
 Node;AmplifyShaderEditor.SamplerNode;10;-806.3296,51.36563;Inherit;True;Property;_WallBaseTexture;Wall Base Texture;0;0;Create;True;0;0;0;False;0;False;-1;None;4761ec5c1ac4a6549805877406379ab8;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 Node;AmplifyShaderEditor.SmoothstepOpNode;54;825.0067,291.6448;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;COLOR;1,0,0,0;False;1;COLOR;0
 Node;AmplifyShaderEditor.PosVertexDataNode;92;-764.0448,819.1611;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
@@ -3523,6 +3600,56 @@ Node;AmplifyShaderEditor.SimpleAddOpNode;95;-522.7449,752.8611;Inherit;False;2;2
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;97;-326.7449,476.661;Inherit;True;2;2;0;FLOAT;0;False;1;FLOAT;0;False;1;FLOAT;0
 Node;AmplifyShaderEditor.LerpOp;90;-275.0449,177.2611;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
 Node;AmplifyShaderEditor.SimpleMultiplyOpNode;93;-517.5449,369.161;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SamplerNode;45;-1987.819,1753.052;Inherit;True;Property;_NoiseMask1;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;42;-2306.601,1423.207;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.SamplerNode;98;-2036.177,1468.056;Inherit;True;Property;_NoiseMask2;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;31;-1999.386,1240.136;Inherit;True;Property;_NoiseMask;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;48;-1410.996,1537.844;Inherit;True;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;47;-2353.461,1662.59;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;1;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;108;-2348.39,1873.81;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;1;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.SamplerNode;99;-1985.771,1974.813;Inherit;True;Property;_NoiseMask3;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;46;-2517.57,1501.483;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;2,2;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;100;-2308.551,1297.954;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.SaturateNode;49;-1090.038,1435.314;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.LerpOp;111;-1579.741,1857.647;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.LerpOp;103;-1582.218,1355.952;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;32;-549.4839,1968.021;Inherit;False;Noise Mask;-1;True;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;115;-2660.735,2089.519;Inherit;False;2;2;0;FLOAT2;0,0;False;1;FLOAT2;2,2;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.SamplerNode;112;-1933.919,2389.504;Inherit;True;Property;_NoiseMask4;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;113;-1929.793,2591.219;Inherit;True;Property;_NoiseMask5;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;116;-2259.464,2400.645;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;117;-2261.159,2605.817;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;120;-2276.811,2792.981;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.ScaleAndOffsetNode;121;-2255.148,3033.077;Inherit;False;3;0;FLOAT2;0,0;False;1;FLOAT2;1,0;False;2;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.LerpOp;124;-1488.084,2949.213;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.LerpOp;122;-1497.668,2542.367;Inherit;False;3;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;2;FLOAT;0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SamplerNode;119;-1906.74,3141.582;Inherit;True;Property;_NoiseMask7;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;118;-1908.625,2935.517;Inherit;True;Property;_NoiseMask6;Noise Mask;8;0;Create;True;0;0;0;False;0;False;-1;1af1adb124539d540ac51142e293e869;1af1adb124539d540ac51142e293e869;True;0;False;white;Auto;False;Instance;31;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.GetLocalVarNode;126;-1792.761,2830.228;Inherit;False;105;worldNormalX;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.SimpleMultiplyOpNode;127;-1280.663,2799.876;Inherit;False;2;2;0;COLOR;0,0,0,0;False;1;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.SaturateNode;128;-1026.064,2651.676;Inherit;False;1;0;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.DynamicAppendNode;109;-2793.818,2566.08;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.Vector2Node;40;-2757.024,1619.536;Inherit;False;Property;_MaskTile;Mask Tile;10;0;Create;True;0;0;0;False;0;False;1,1;1.2,1.02;0;3;FLOAT2;0;FLOAT;1;FLOAT;2
+Node;AmplifyShaderEditor.GetLocalVarNode;107;-1958.492,1661.232;Inherit;False;105;worldNormalX;1;0;OBJECT;;False;1;FLOAT;0
+Node;AmplifyShaderEditor.StaticSwitch;88;-879.9468,1956.009;Inherit;False;Property;_UseWorldSpace;Use World Space;17;0;Create;True;0;0;0;False;0;False;0;0;0;True;;Toggle;2;Key0;Key1;Create;True;True;All;9;1;COLOR;0,0,0,0;False;0;COLOR;0,0,0,0;False;2;COLOR;0,0,0,0;False;3;COLOR;0,0,0,0;False;4;COLOR;0,0,0,0;False;5;COLOR;0,0,0,0;False;6;COLOR;0,0,0,0;False;7;COLOR;0,0,0,0;False;8;COLOR;0,0,0,0;False;1;COLOR;0
+Node;AmplifyShaderEditor.RegisterLocalVarNode;105;-3356.247,1195.629;Inherit;False;worldNormalX;-1;True;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode;134;-3811.164,1489.061;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DotProductOpNode;139;-3791.731,1765.885;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldPosInputsNode;141;-4222.657,1985.582;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.DotProductOpNode;145;-3800.18,2065.842;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.DynamicAppendNode;137;-3141.195,1414.892;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.AbsOpNode;130;-3516.836,1187.342;Inherit;False;1;0;FLOAT;0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.WorldNormalVector;106;-3749.474,1158.629;Inherit;False;True;1;0;FLOAT3;0,0,1;False;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.WorldPosInputsNode;41;-4253.64,1396.801;Inherit;False;0;4;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3
+Node;AmplifyShaderEditor.PosVertexDataNode;86;-3215.019,2504.905;Inherit;False;0;0;5;FLOAT3;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.DynamicAppendNode;110;-2797.1,2712.434;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.DynamicAppendNode;143;-3154.883,1729.504;Inherit;False;FLOAT2;4;0;FLOAT;0;False;1;FLOAT;0;False;2;FLOAT;0;False;3;FLOAT;0;False;1;FLOAT2;0
+Node;AmplifyShaderEditor.DotProductOpNode;148;-3793.209,2267.897;Inherit;False;2;0;FLOAT3;0,0,0;False;1;FLOAT4;0,0,0,0;False;1;FLOAT;0
+Node;AmplifyShaderEditor.ObjectToWorldTransfNode;133;-4259.121,1565.505;Inherit;False;1;0;FLOAT4;0,1,0,0;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ObjectToWorldTransfNode;154;-4265.545,1757.38;Inherit;False;1;0;FLOAT4;1,0,1,0;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ObjectToWorldTransfNode;153;-4242.5,2370.106;Inherit;False;1;0;FLOAT4;0,1,0,0;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.ObjectToWorldTransfNode;142;-4262.824,2150.11;Inherit;False;1;0;FLOAT4;1,0,1,0;False;5;FLOAT4;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
+Node;AmplifyShaderEditor.SamplerNode;155;877.6766,-243.1559;Inherit;True;Property;_NormalMap;Normal Map;18;1;[Normal];Create;True;0;0;0;False;0;False;-1;None;None;True;0;False;white;Auto;False;Object;-1;Auto;Texture2D;8;0;SAMPLER2D;;False;1;FLOAT2;0,0;False;2;FLOAT;0;False;3;FLOAT2;0,0;False;4;FLOAT2;0,0;False;5;FLOAT;1;False;6;FLOAT;0;False;7;SAMPLERSTATE;;False;5;COLOR;0;FLOAT;1;FLOAT;2;FLOAT;3;FLOAT;4
 WireConnection;17;0;34;1
 WireConnection;17;2;19;0
 WireConnection;19;0;20;0
@@ -3538,16 +3665,6 @@ WireConnection;44;0;11;2
 WireConnection;44;1;21;0
 WireConnection;43;0;17;0
 WireConnection;43;1;14;0
-WireConnection;31;1;42;0
-WireConnection;42;0;88;0
-WireConnection;42;1;46;0
-WireConnection;47;0;88;0
-WireConnection;47;1;40;0
-WireConnection;32;0;49;0
-WireConnection;45;1;47;0
-WireConnection;49;0;48;0
-WireConnection;48;0;31;0
-WireConnection;48;1;45;0
 WireConnection;35;0;33;0
 WireConnection;35;1;36;1
 WireConnection;35;2;36;2
@@ -3568,12 +3685,6 @@ WireConnection;68;0;66;1
 WireConnection;68;1;63;1
 WireConnection;68;2;63;2
 WireConnection;59;0;70;0
-WireConnection;76;1;85;0
-WireConnection;84;0;88;0
-WireConnection;83;0;41;0
-WireConnection;46;0;40;0
-WireConnection;88;1;86;0
-WireConnection;88;0;83;0
 WireConnection;54;0;71;0
 WireConnection;54;1;55;1
 WireConnection;54;2;55;2
@@ -3597,5 +3708,70 @@ WireConnection;90;1;93;0
 WireConnection;90;2;97;0
 WireConnection;93;0;10;0
 WireConnection;93;1;89;0
+WireConnection;45;1;47;0
+WireConnection;42;0;143;0
+WireConnection;42;1;46;0
+WireConnection;98;1;42;0
+WireConnection;31;1;100;0
+WireConnection;48;0;103;0
+WireConnection;48;1;111;0
+WireConnection;47;0;137;0
+WireConnection;47;1;40;0
+WireConnection;108;0;143;0
+WireConnection;108;1;40;0
+WireConnection;99;1;108;0
+WireConnection;46;0;40;0
+WireConnection;100;0;137;0
+WireConnection;100;1;46;0
+WireConnection;49;0;48;0
+WireConnection;111;0;45;0
+WireConnection;111;1;99;0
+WireConnection;111;2;107;0
+WireConnection;103;0;31;0
+WireConnection;103;1;98;0
+WireConnection;103;2;107;0
+WireConnection;32;0;88;0
+WireConnection;115;0;40;0
+WireConnection;112;1;116;0
+WireConnection;113;1;117;0
+WireConnection;116;0;109;0
+WireConnection;116;1;115;0
+WireConnection;117;0;110;0
+WireConnection;117;1;115;0
+WireConnection;120;0;109;0
+WireConnection;120;1;40;0
+WireConnection;121;0;110;0
+WireConnection;121;1;40;0
+WireConnection;124;0;118;0
+WireConnection;124;1;119;0
+WireConnection;124;2;126;0
+WireConnection;122;0;112;0
+WireConnection;122;1;113;0
+WireConnection;122;2;126;0
+WireConnection;119;1;121;0
+WireConnection;118;1;120;0
+WireConnection;127;0;122;0
+WireConnection;127;1;124;0
+WireConnection;128;0;127;0
+WireConnection;109;0;86;3
+WireConnection;109;1;86;2
+WireConnection;88;1;128;0
+WireConnection;88;0;49;0
+WireConnection;105;0;130;0
+WireConnection;134;0;41;0
+WireConnection;134;1;133;0
+WireConnection;139;0;41;0
+WireConnection;139;1;154;0
+WireConnection;145;0;141;0
+WireConnection;145;1;142;0
+WireConnection;137;0;139;0
+WireConnection;137;1;134;0
+WireConnection;130;0;106;1
+WireConnection;110;0;86;1
+WireConnection;110;1;86;2
+WireConnection;143;0;145;0
+WireConnection;143;1;148;0
+WireConnection;148;0;141;0
+WireConnection;148;1;153;0
 ASEEND*/
-//CHKSM=B95CD60B4D0BF1F6EA7F2F17069E2AE673CE7E66
+//CHKSM=0823F8C153446E9434EE643E5DAE75AF5F63136B
