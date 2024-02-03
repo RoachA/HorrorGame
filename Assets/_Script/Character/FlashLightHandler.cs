@@ -8,6 +8,7 @@ public class FlashLightHandler : MonoBehaviour
     [SerializeField] private float _offsettingDuration = .5f;
     [SerializeField] private FlashLightParam _defaultParams;
     [SerializeField] private FlashLightParam _focusedParams;
+    [SerializeField] private LightSourceMesher _lightSourceMesh;
     private Light m_light;
     private bool m_isObscured;
     private bool m_isOn = true;
@@ -15,6 +16,7 @@ public class FlashLightHandler : MonoBehaviour
     private Sequence _seq;
     private Sequence _focusSeq;
     private Sequence _jitterSeq;
+    private bool _hasMesh = false;
 
     [Serializable]
     private struct FlashLightParam
@@ -28,6 +30,7 @@ public class FlashLightHandler : MonoBehaviour
     {
         m_light = GetComponentInChildren<Light>();
         SetLightParam(false);
+        _hasMesh = _lightSourceMesh;
     }
 
     public void SetLightParam(bool isFocused)
@@ -60,8 +63,15 @@ public class FlashLightHandler : MonoBehaviour
             isFocused ? _focusedParams.Intensity : _defaultParams.Intensity, 0.5f,
             a =>
             {
+                if (_hasMesh) _lightSourceMesh.UpdateLight();
                 m_light.intensity = a;
             }));
+    }
+
+    private void SetRotation()
+    {
+        //add delayed ease to the light following the camera. 
+        //no light must go towards camera direction but a bit earlier.
     }
 
     private void OnTriggerEnter(Collider other)
@@ -92,6 +102,7 @@ public class FlashLightHandler : MonoBehaviour
     {
         m_isOn = !m_isOn;
         
+        _lightSourceMesh.gameObject.SetActive(m_isOn);
         m_light.intensity = m_isOn ? _defaultParams.Intensity : 0;
     }
 

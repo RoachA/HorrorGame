@@ -133,7 +133,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _Metallicness: 0.4
+    - _Metallicness: 0.2
     - _OcclusionStrength: 1
     - _PaintOffset: -2.91
     - _Parallax: 0.005
@@ -156,9 +156,9 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LeakColoration: {r: 0.26415092, g: 0.22303309, b: 0.22303309, a: 1}
-    - _LeakDefiniton: {r: 0.25, g: -0.11, b: 0, a: 0}
-    - _LeakTile: {r: 1.41, g: 0.5, b: 0, a: 0}
+    - _LeakColoration: {r: 1, g: 0.5235849, b: 0.5235849, a: 1}
+    - _LeakDefiniton: {r: 0.1, g: 0, b: 0, a: 0}
+    - _LeakTile: {r: 2.03, g: 0.5, b: 0, a: 0}
     - _MaskTile: {r: 0.1, g: 0.2, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 0.015, g: -0.0035, b: 0, a: 0}
     - _Paint: {r: 0.14150941, g: 0.034042355, b: 0.034042355, a: 0.5176471}
