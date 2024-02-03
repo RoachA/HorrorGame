@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using Sirenix.OdinInspector;
+using Unity.Mathematics;
 using UnityEngine;
 
 public class MouseCamLook : MonoBehaviour
@@ -40,6 +41,7 @@ public class MouseCamLook : MonoBehaviour
         m_noiseShakeBaseVal.y = m_noiseShakeComponent.m_FrequencyGain;
         
         m_camStartPos = transform.localPosition;
+        transform.rotation = quaternion.Euler(Vector3.zero);
     }
 
     public void SetFocusMode(bool isFocusMode)
@@ -59,13 +61,15 @@ public class MouseCamLook : MonoBehaviour
         m_smoothV.x = Mathf.Lerp(m_smoothV.x, md.x, 1f / smoothing);
         m_smoothV.y = Mathf.Lerp(m_smoothV.y, md.y, 1f / smoothing);
         m_mouseLook += m_smoothV;
+        m_mouseLook.y = Mathf.Clamp(m_mouseLook.y, -60, 75);
         
+       
         transform.localRotation = Quaternion.AngleAxis(-m_mouseLook.y, Vector3.right);
         Character.transform.localRotation = Quaternion.AngleAxis(m_mouseLook.x, Character.transform.up);
 
         CheckMotion();
     }
-
+    
     private bool m_isMoving = false;
     private BobbingSetting m_previousSetting;
     private Vector2 m_previousFrameNoiseProfile;

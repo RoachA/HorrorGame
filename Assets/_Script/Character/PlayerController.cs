@@ -35,6 +35,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private FlashLightHandler _flashLight;
     
     private bool m_isSprinting;
+    private Vector3 m_moveVector;
 
     public CinemachineVirtualCamera VCam
     {
@@ -63,6 +64,15 @@ public class PlayerController : MonoBehaviour
         
         Vector3 movement = new Vector3(strafe * Time.fixedDeltaTime, 0, translation * Time.fixedDeltaTime);
         m_characterController.Move(transform.TransformDirection(movement));
+        
+        m_moveVector = Vector3.zero;
+        
+        if (m_characterController.isGrounded == false)
+        {
+            m_moveVector += Physics.gravity;
+        }
+        
+        m_characterController.Move(m_moveVector * Time.deltaTime);
     }
 
     private void Update()
