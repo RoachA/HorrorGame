@@ -8,8 +8,9 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Corpse
-  m_Shader: {fileID: 4800000, guid: 7afb1c84b7a2ea84ab87d5130c2edcc8, type: 3}
-  m_ValidKeywords: []
+  m_Shader: {fileID: 4800000, guid: 9226161099acd26438ee1a1407dc899d, type: 3}
+  m_ValidKeywords:
+  - _ENVIRONMENTREFLECTIONS_OFF
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 1
@@ -20,8 +21,12 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - _Albedo:
+        m_Texture: {fileID: 2800000, guid: 9f5abaa37c90a2b429fd1c89fa306b00, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BaseMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9f5abaa37c90a2b429fd1c89fa306b00, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _BumpMap:
@@ -53,11 +58,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MainTex:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 9f5abaa37c90a2b429fd1c89fa306b00, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 968abd610a62b84478b021753eeb9564, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _NoiseMask:
@@ -76,8 +81,12 @@ Material:
         m_Texture: {fileID: 0}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
+    - _SmoothnessandAO:
+        m_Texture: {fileID: 2800000, guid: 968abd610a62b84478b021753eeb9564, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _SpecGlossMap:
-        m_Texture: {fileID: 0}
+        m_Texture: {fileID: 2800000, guid: 5f10a72cfc58c3245a1e3ecc534b5af0, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Texture2:
@@ -111,27 +120,29 @@ Material:
     - _BMaskOffset: 0
     - _Blend: 0
     - _BottomMaskOffset: -1.49
-    - _BumpScale: 1
+    - _BumpScale: 0.5
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
     - _Cull: 2
     - _Cutoff: 0.5
-    - _DetailAlbedoMapScale: 1
+    - _DetailAlbedoMapScale: 0
     - _DetailNormalMapScale: 1
     - _DstBlend: 0
-    - _EnvironmentReflections: 1
+    - _EnvironmentReflections: 0
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _Metallic: 0
+    - _Metallic: 0.739
     - _Metallicness: 0.37
+    - _OcclusionMultiplier: 0
     - _OcclusionStrength: 1
     - _PaintOffset: 0
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _Smoothness: 1
+    - _Smoothness: 0.647
+    - _SmoothnessMultiplier: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
     - _SrcBlend: 1
@@ -142,19 +153,25 @@ Material:
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
-    - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _AOSharpness: {r: 1.63, g: 1, b: 0, a: 0}
+    - _BaseColor: {r: 0, g: 0, b: 0, a: 1}
+    - _Color: {r: 0, g: 0, b: 0, a: 1}
     - _Color0: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _FresnelBsp: {r: 0.02, g: 0.84, b: 0.79, a: 0}
     - _LeakColoration: {r: 0.6792453, g: 0.57992166, b: 0.57992166, a: 1}
     - _LeakDefiniton: {r: 0, g: 0.02, b: 0, a: 0}
     - _LeakTile: {r: 1.33, g: 1.08, b: 0, a: 0}
-    - _MaskTile: {r: 5.29, g: 1.79, b: 0, a: 0}
+    - _MaskTile: {r: 5.78, g: 1.79, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: -0.17, g: 0.32, b: 0, a: 0}
     - _Paint: {r: 1, g: 1, b: 1, a: 1}
     - _PaintVector: {r: 1.92, g: 0.1, b: 0, a: 0}
-    - _SmoothnessStep: {r: 0, g: 1.83, b: 0, a: 0}
+    - _RimColor: {r: 0.5310609, g: 0.7662018, b: 0.9622642, a: 1}
+    - _RimFresnel: {r: 0, g: 2, b: 8, a: 0}
+    - _SmoothnessSharpness: {r: 0.3, g: 1.3, b: 0, a: 0}
+    - _SmoothnessStep: {r: 0, g: 2, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
+    - _Tint: {r: 0.7735849, g: 0.7735849, b: 0.7735849, a: 1}
     - _VerticalMapSharpness: {r: -3.12, g: -0.41, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &7744615343794382983

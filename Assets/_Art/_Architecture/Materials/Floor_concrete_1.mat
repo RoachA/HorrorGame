@@ -163,7 +163,7 @@ Material:
     - _MaskDefinition: {r: 0.025, g: 0, b: 0, a: 0}
     - _MaskTile: {r: 0.15, g: 0.15, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 0, g: 1, b: 0, a: 0}
-    - _Smoothness: {r: 0.71, g: 0.42, b: 0, a: 0}
+    - _Smoothness: {r: 0, g: 0.84, b: 0, a: 0}
     - _SmoothnessStep: {r: 0.79, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _VerticalMapSharpness: {r: 0, g: 1, b: 0, a: 0}
