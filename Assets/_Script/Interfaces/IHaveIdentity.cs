@@ -1,4 +1,4 @@
-namespace Game.World.Objects
+namespace Game.World
 {
     public interface IHaveIdentity
     {

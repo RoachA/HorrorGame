@@ -1,19 +1,16 @@
-using System.Collections;
-using System.Collections.Generic;
+using Game.World;
 using UnityEngine;
 
-public class EnemyController : MonoBehaviour
+public class EnemyController : MonoBehaviour, IHaveIdentity
 {
     [SerializeField] private Animator _animator;
     
-    void Start()
+    public int Id { get; set; }
+    
+    public void GenerateUniqueId()
     {
-        
+        Id = UniqueIDHelper.GenerateUniqueId(this);
     }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+    
+    
 }
