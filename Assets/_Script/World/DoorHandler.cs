@@ -7,11 +7,15 @@ using Unity.Mathematics;
 #if UNITY_EDITOR
 #endif
 using UnityEngine;
+using Zenject;
 
 namespace Game.World.Objects
 {
     public class DoorHandler : MonoBehaviour, IInteractable, IHaveIdentity
     {
+        [Inject] private readonly SignalBus _bus;
+        [Inject] private PlayerController _playerController;
+
         [Header("Door Parameters")]
         [SerializeField] private Transform _door;
         [SerializeField] private Transform _doorHandle;
@@ -26,7 +30,7 @@ namespace Game.World.Objects
         private float m_input_delta;
         private Rigidbody m_rbDoor;
         private Sequence m_handleSeq;
-
+        
 
         InteractionMethod IInteractable.InteractionType { get; set; } = InteractionMethod.ControlledWithX;
         bool IInteractable.IsActive
@@ -105,6 +109,8 @@ namespace Game.World.Objects
 
         void IInteractable.InteractStart(InteractionStat stat, Action callback)
         {
+            _playerController.Fart();
+            
             UpdateHandle(true);
             if (_isLocked)
             {
