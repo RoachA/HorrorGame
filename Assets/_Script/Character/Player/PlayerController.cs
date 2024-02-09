@@ -110,9 +110,4 @@ public class PlayerController : MonoBehaviour
             m_isSprinting = false;
         }
     }
-
-    public void Fart()
-    {
-        Debug.Log("FAARTTS");
-    }
 }
