@@ -1,22 +1,22 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;using DG.Tweening;
+using DG.Tweening;
 using Game.UI;
-using TMPro;
-using Unity.Mathematics;
 #if UNITY_EDITOR
 #endif
 using UnityEngine;
+using Zenject;
 
 namespace Game.World.Objects
 {
     public class DoorHandler : MonoBehaviour, IInteractable, IHaveIdentity
     {
+        [Inject] private SignalBus _signalBus;
+
         [Header("Door Parameters")]
         [SerializeField] private Transform _door;
         [SerializeField] private Transform _doorHandle;
         [SerializeField] private bool _isLocked;
-        private Vector2 _doorRotationRange; // LATERS
+        private Vector2 _doorRotationRange;
         [SerializeField] private float _torqueForce = 140;
         [SerializeField] private float _inputRangeFromCenter = 5; //get center of screen, origin +- limits. -- in pixels
    
@@ -26,8 +26,7 @@ namespace Game.World.Objects
         private float m_input_delta;
         private Rigidbody m_rbDoor;
         private Sequence m_handleSeq;
-
-
+        
         InteractionMethod IInteractable.InteractionType { get; set; } = InteractionMethod.ControlledWithX;
         bool IInteractable.IsActive
         {
@@ -92,6 +91,9 @@ namespace Game.World.Objects
 
             Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
+            
+            //todo check door angle and fire signal if angle meets opening condition:
+            _signalBus.Fire(new CoreSignals.DoorWasOpenedSignal(Id));
         }
 
         private void UpdateHandle(bool isGrabbed)

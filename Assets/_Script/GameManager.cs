@@ -4,9 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using Game.UI;
 using UnityEngine;
+using Zenject;
 
 public class GameManager : MonoBehaviour
 {
+    [Inject] private readonly SignalBus _bus;
     [SerializeField] private bool _isDebugging = true;
     
     public float updateInterval = 0.5f; // Update interval in seconds
@@ -17,6 +19,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         timeleft = updateInterval;
+        _bus.Subscribe<CoreSignals.DoorWasOpenedSignal>(OnDoorOpened);
+    }
+
+    private void OnDoorOpened(CoreSignals.DoorWasOpenedSignal signal)
+    {
+        Debug.Log("Door " + signal.Id + " was opened!");
     }
 
     void Update()
