@@ -8,7 +8,7 @@ using Zenject;
 
 namespace Game.World.Objects
 {
-    public class DoorHandler : MonoBehaviour, IInteractable, IHaveIdentity
+    public class DoorHandler : WorldEntity, IInteractable
     {
         [Inject] private SignalBus _signalBus;
 
@@ -43,23 +43,16 @@ namespace Game.World.Objects
             get => m_startStat;
             set => m_startStat = value;
         }
-
+        
         GameObject IInteractable.GetInteractionGameObject()
         {
             // todo can return Iinteractable info laters.
             return gameObject;
         }
         
-        public int Id { get; set; }
-        
-        public void GenerateUniqueId()
+        protected override void Start()
         {
-          Id = UniqueIDHelper.GenerateUniqueId(this);
-        }
-
-        private void Start()
-        {
-            GenerateUniqueId();
+            base.Start();
             m_rbDoor = _door.GetComponent<Rigidbody>();
         }
 
@@ -91,9 +84,6 @@ namespace Game.World.Objects
 
             Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
-            
-            //todo check door angle and fire signal if angle meets opening condition:
-            _signalBus.Fire(new CoreSignals.DoorWasOpenedSignal(Id));
         }
 
         private void UpdateHandle(bool isGrabbed)
@@ -116,6 +106,7 @@ namespace Game.World.Objects
             }
             
             ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_startStat.Time;
+            _signalBus.Fire(new CoreSignals.DoorWasOpenedSignal(Id));
             m_isActive = true;
             m_startStat = stat;
         }

@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Game.Character
 {
-    public class InteractionController : MonoBehaviour
+    public class PlayerInteractionController : MonoBehaviour
     {
         [SerializeField] private float _interactibleDistance = 1;
         

@@ -1,32 +1,65 @@
-using System;
+using System.Collections;
 using DG.Tweening;
 using Game.World;
 using RootMotion.FinalIK;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.AI;
+using Zenject;
 
-public class EnemyController : MonoBehaviour, IHaveIdentity
+public class EnemyController : WorldEntity
 {
+    [Inject] private readonly SignalBus _bus;
+    [Inject] private readonly PlayerController _player;
+    
+    [Header("References")]
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [SerializeField] private PatrolManager _patrolManager;
     [SerializeField] private LookAtIK _lookAtManager;
-    
-    [SerializeField] private Transform _lookAtTarget;
+
+    [Header("Enemy Behavior Parameters")]
+    [SerializeField] private float _timeUntilStopChase = 6f;
+    [SerializeField] private float _chaseSpeed = 1f;
+    [SerializeField] private float _walkSpeed = 0.5f;
+
+    private bool m_isChasing;
 
     private Vector3[] _pathArray; 
     private bool _isPatrolling = true;
     private int m_currentNodeIndex = 0;
     private Vector3 m_target_patrolPoint;
-
-    public int Id { get; set; }
-
-    public void GenerateUniqueId()
+    private Coroutine _chaseRoutine;
+    
+    protected override void Start()
     {
-        Id = UniqueIDHelper.GenerateUniqueId(this);
+        base.Start();
+        _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnSpotsPlayer);
+        _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightWasLost);
     }
 
+    private void OnSpotsPlayer(CoreSignals.PlayerWasSightedSignal signal)
+    {
+        if (Id == signal.Agent.Id)
+        {
+            m_isChasing = true;
+            
+            SetLookAtState(_player.transform, true, 0.5f);
+            if (_chaseRoutine != null)
+                StopCoroutine(_chaseRoutine);
+        }
+    }
+
+    private void OnPlayerSightWasLost(CoreSignals.PlayerSightWasLostSignal signal)
+    {
+        if (Id == signal.Agent.Id)
+        {
+            SetLookAtState(_player.transform, false, 0.5f);
+            _chaseRoutine = StartCoroutine(ChaseRoutine());
+            _animator.SetTrigger("WALK");
+        }
+    }
+    
     private void Awake()
     {
         SetupDependencies();
@@ -40,12 +73,14 @@ public class EnemyController : MonoBehaviour, IHaveIdentity
         if (_lookAtManager == null) GetComponent<LookAtIK>();
 
         _pathArray = _patrolManager._patrolNodes.ToArray();
-        _animator.SetTrigger("IDLE");
+        _animator.SetTrigger("WALK");
         _lookAtManager.solver.SetLookAtWeight(0);
     }
 
     void LateUpdate()
     {
+        _animator.SetBool("CHASE", m_isChasing);
+        _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
         if (_isPatrolling == false) return;
         UpdateDestination();
 
@@ -60,7 +95,6 @@ public class EnemyController : MonoBehaviour, IHaveIdentity
     {
         m_target_patrolPoint = _pathArray[m_currentNodeIndex];
         _navMeshAgent.SetDestination(m_target_patrolPoint);
-        _animator.SetTrigger("WALK");
     }
 
     private void IterateDestinationPointIndex()
@@ -72,22 +106,28 @@ public class EnemyController : MonoBehaviour, IHaveIdentity
         }
     }
 
-    private Sequence _lookSeq;
-    //todo placeholder
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator ChaseRoutine()
     {
-        if (other.CompareTag("Player"))
-        {
-            Debug.Log("You are detected!");
-            _lookAtManager.solver.target = other.transform;
-            _lookSeq?.Kill();
-            _lookSeq = DOTween.Sequence();
+        yield return new WaitForSeconds(_timeUntilStopChase);
+        
+        m_isChasing = false;
+        Debug.Log(Id + " has lost player at: " + Time.time.ToString("F3"));
+    }
 
-            _lookSeq.Append(DOVirtual.Float(0, 1, 1, a =>
-            {
-                _lookAtManager.solver.SetLookAtWeight(a);
-            }));
-        }
+    private Sequence _lookSeq;
+    private bool m_lastLookState;
+    private void SetLookAtState(Transform target, bool look, float lookSpeed = 1)
+    {
+        if (m_lastLookState == look) return;
+        
+        _lookAtManager.solver.target = target;
+        _lookSeq?.Kill();
+        _lookSeq = DOTween.Sequence();
+
+        _lookSeq.Append(DOVirtual.Float(look ? 0 : 1, look ? 1 : 0, lookSpeed, a =>
+        {
+            _lookAtManager.solver.SetLookAtWeight(a);
+        }));
     }
 
     [Button]
@@ -95,4 +135,5 @@ public class EnemyController : MonoBehaviour, IHaveIdentity
     {
         _isPatrolling = true;
     }
+    
 }

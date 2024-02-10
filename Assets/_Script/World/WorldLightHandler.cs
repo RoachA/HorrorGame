@@ -5,7 +5,7 @@ using DG.Tweening;
 namespace Game.World.Objects
 {
     [RequireComponent(typeof(Light))]
-    public class WorldLightHandler : MonoBehaviour, IHaveIdentity, IInteractable
+    public class WorldLightHandler : WorldEntity, IInteractable
     {
         private LightType LightType => m_light.type;
         [SerializeField] private Vector2 IntensityAndRange => new Vector2(m_light.intensity, m_light.range);
@@ -22,12 +22,6 @@ namespace Game.World.Objects
         private bool m_isActive;
         private InteractionStat m_endStat;
         private InteractionStat m_startStat;
-        public int Id { get; set; }
-        
-        public void GenerateUniqueId()
-        {
-            Id = UniqueIDHelper.GenerateUniqueId(this);
-        }
 
         InteractionMethod IInteractable.InteractionType
         {
@@ -50,10 +44,11 @@ namespace Game.World.Objects
             set => m_startStat = value;
         }
 
-        private void Start()
+        protected override void Start()
         {
             if (m_light == null) m_light = GetComponent<Light>();
             if (_startWithJitter) StartJitter();
+            base.Start();
         }
 
         public GameObject GetInteractionGameObject()

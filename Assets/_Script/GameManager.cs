@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using Game.UI;
 using UnityEngine;
+using UnityEngine.Rendering.UI;
 using Zenject;
 
 public class GameManager : MonoBehaviour
@@ -20,11 +21,23 @@ public class GameManager : MonoBehaviour
     {
         timeleft = updateInterval;
         _bus.Subscribe<CoreSignals.DoorWasOpenedSignal>(OnDoorOpened);
+        _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSpotted);
     }
 
+    private void OnPlayerSpotted(CoreSignals.PlayerWasSightedSignal signal)
+    {
+        Debug.Log(signal.Agent.Id + " has spotted player at: " + signal.Time.ToString("F3"));
+    }
+    
     private void OnDoorOpened(CoreSignals.DoorWasOpenedSignal signal)
     {
         Debug.Log("Door " + signal.Id + " was opened!");
+    }
+
+    private void OnDestroy()
+    {
+        _bus.TryUnsubscribe<CoreSignals.DoorWasOpenedSignal>(OnDoorOpened);
+        _bus.TryUnsubscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSpotted);
     }
 
     void Update()

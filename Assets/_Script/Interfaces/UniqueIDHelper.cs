@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Game.World;
 using Game.World.Objects;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class UniqueIDHelper : MonoBehaviour
@@ -22,7 +24,6 @@ public class UniqueIDHelper : MonoBehaviour
         idToObjectMap[id] = obj; // Map the ID to the object
         return id;
     }
-
     
     public static IHaveIdentity GetObjectById(int id)
     {
@@ -36,5 +37,16 @@ public class UniqueIDHelper : MonoBehaviour
             return null;
         }
     }
-    
+
+    public static List<IHaveIdentity> GetTheListOfUniqueIdentities()
+    {
+        var uniqueIdentitiesList = new List<IHaveIdentity>();
+
+        foreach (var pair in idToObjectMap)
+        {
+            uniqueIdentitiesList.Add(pair.Value);
+        }
+
+        return uniqueIdentitiesList;
+    }
 }
