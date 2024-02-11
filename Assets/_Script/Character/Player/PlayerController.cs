@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    private static PlayerController instance;
+    private static PlayerController instance; //todo only for debug
     public static PlayerController Instance
     {
         get
@@ -56,6 +56,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     private void FixedUpdate()
     {
+        HandleGravity();
         HandleSprint();
 
         // Calculate movement inputs
@@ -64,15 +65,16 @@ public class PlayerController : MonoBehaviour
         
         Vector3 movement = new Vector3(strafe * Time.fixedDeltaTime, 0, translation * Time.fixedDeltaTime);
         m_characterController.Move(transform.TransformDirection(movement));
-        
-        m_moveVector = Vector3.zero;
-        
+    }
+
+    private void HandleGravity()
+    {
         if (m_characterController.isGrounded == false)
         {
+            m_moveVector = Vector3.zero;
             m_moveVector += Physics.gravity;
+            m_characterController.Move(m_moveVector * Time.deltaTime);
         }
-        
-        m_characterController.Move(m_moveVector * Time.deltaTime);
     }
 
     private void Update()

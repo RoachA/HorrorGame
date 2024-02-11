@@ -55,8 +55,9 @@ MonoBehaviour:
   _navMeshAgent: {fileID: 6228087874800549719}
   _patrolManager: {fileID: 6228087874800549720}
   _lookAtManager: {fileID: 6228087874800549723}
-  _observer: {fileID: 0}
-  _lookAtTarget: {fileID: 0}
+  _timeUntilStopChase: 6
+  _chaseSpeed: 3
+  _walkSpeed: 0.5
 --- !u!114 &6228087874800549724
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -69,17 +70,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1a8405f5357c8246b8e19b8ce028379, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inputOrgan: {fileID: 542885406207020539}
-  _hearingRange: 0
-  _sightFurstrum:
-    SightRange: 5.22
-    ConeAngle: 79
   m_targetMask:
     serializedVersion: 2
     m_Bits: 512
   m_obstructionMask:
     serializedVersion: 2
     m_Bits: 64
+  _inputOrgan: {fileID: 542885406207020539}
+  _hearingRange: 0
+  _sightFurstrum:
+    SightRange: 8
+    ConeAngle: 79
   _canSeePlayer: 0
   m_playerRef: {fileID: 0}
 --- !u!114 &6228087874800549720
@@ -96,7 +97,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _patrolNodes:
   - {x: 13.48981, y: 0, z: -57.706345}
-  - {x: 13.41825, y: 1.5238597, z: -55.269447}
+  - {x: 13.41825, y: 0, z: -55.269447}
   - {x: 13.502049, y: 0, z: -52.778557}
   - {x: 12.324615, y: 0, z: -51.116234}
   - {x: 11.502485, y: 0, z: -49.23357}
@@ -195,7 +196,7 @@ MonoBehaviour:
       axis: {x: -0.0000014355992, y: 0.075382404, z: 0.9971547}
       baseForwardOffsetEuler: {x: 0, y: 0, z: 0}
     eyes: []
-    bodyWeight: 0.8
+    bodyWeight: 0.176
     headWeight: 1
     eyesWeight: 1
     clampWeight: 0.5

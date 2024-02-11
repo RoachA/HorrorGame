@@ -5506,7 +5506,7 @@ MonoBehaviour:
   _vCam: {fileID: 8731122498942300980}
   _gameCam: {fileID: 165566742419961702}
   WalkingSpeed: 2
-  RunningSpeed: 6
+  RunningSpeed: 5
   _flashLight: {fileID: 6095909191403727619}
 --- !u!114 &715829149
 MonoBehaviour:
@@ -5521,7 +5521,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactibleDistance: 3
-  _mouseCamController: {fileID: 4251605481729528458}
+  _mouseCamController: {fileID: 0}
   _gameplayUI: {fileID: 0}
   _isDebugging: 0
 --- !u!143 &72490668
