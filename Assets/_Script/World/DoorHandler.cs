@@ -1,6 +1,7 @@
 using System;
 using DG.Tweening;
 using Game.UI;
+using Sirenix.OdinInspector;
 #if UNITY_EDITOR
 #endif
 using UnityEngine;
@@ -8,18 +9,41 @@ using Zenject;
 
 namespace Game.World.Objects
 {
+    public enum LockType
+    {
+        Key = 0,
+        Code = 1,
+        Blocker = 2,
+    }
+    
     public class DoorHandler : WorldEntity, IInteractable
     {
         [Inject] private SignalBus _signalBus;
 
         [Header("Door Parameters")]
+        [BoxGroup("References")]
         [SerializeField] private Transform _door;
+        [BoxGroup("References")]
         [SerializeField] private Transform _doorHandle;
-        [SerializeField] private bool _isLocked;
-        private Vector2 _doorRotationRange;
+        
+        [BoxGroup("Door Main Parameters")]
         [SerializeField] private float _torqueForce = 140;
+        [BoxGroup("Door Main Parameters")]
         [SerializeField] private float _inputRangeFromCenter = 5; //get center of screen, origin +- limits. -- in pixels
+
+        [BoxGroup("Lock Settings")]
+        [SerializeField] private bool _requiresUnlocking;
+        [BoxGroup("Lock Settings")]
+        [ShowIf("_requiresUnlocking")]
+        [SerializeField] private LockType _lockerType;
+        [BoxGroup("Lock Settings")]
+        [ShowIf("_requiresUnlocking")]
+        [SerializeField] private WorldEntity _keyEntity;
+
+        private Vector2 _doorRotationRange;
    
+        [Header("Debug")]
+        [SerializeField] private bool _isLocked;
         private InteractionStat m_endStat;
         private InteractionStat m_startStat;
         private bool m_isActive;

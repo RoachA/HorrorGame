@@ -79,8 +79,13 @@ public class EnemyController : WorldEntity
 
     void LateUpdate()
     {
+        Debug.Log(_navMeshAgent.velocity);
         _animator.SetBool("CHASE", m_isChasing);
         _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
+        _isPatrolling = m_isChasing == false;
+        
+        HandleChase();
+        
         if (_isPatrolling == false) return;
         UpdateDestination();
 
@@ -89,6 +94,24 @@ public class EnemyController : WorldEntity
             IterateDestinationPointIndex();
             UpdateDestination();
         }
+    }
+
+    private const int m_chaseUpdateFreq = 250;
+    private int m_currentChaseUpdateTick = 0;
+    
+    private void HandleChase()
+    {
+        if (m_isChasing == false) return;
+
+        if (m_currentChaseUpdateTick == m_chaseUpdateFreq) m_currentChaseUpdateTick = 0;
+
+        if (m_currentChaseUpdateTick > 0)
+        {
+            m_currentChaseUpdateTick++;
+            return;
+        }
+        
+        _navMeshAgent.SetDestination(_player.transform.position);
     }
 
     private void UpdateDestination()

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
@@ -6,6 +7,55 @@ using UnityEngine;
 [CustomEditor(typeof(ObserverModule))]
 public class ObserverModuleEditor : Editor
 {
+    private SerializedProperty _clueWeightsProp;
+    private SerializedProperty _hearingRangeProp;
+    private SerializedProperty _sightFurstrumProp;
+    private SerializedProperty m_targetMask;
+    private SerializedProperty m_obstructionMask;
+    private SerializedProperty _inputOrgan;
+    
+    private void OnEnable()
+    {
+        _clueWeightsProp = serializedObject.FindProperty("_clueWeights");
+        _hearingRangeProp = serializedObject.FindProperty("_hearingRange");
+        _sightFurstrumProp = serializedObject.FindProperty("_sightFurstrum");
+        m_targetMask = serializedObject.FindProperty("m_targetMask");
+        m_obstructionMask = serializedObject.FindProperty("m_obstructionMask");
+        _inputOrgan = serializedObject.FindProperty("_inputOrgan");
+    }
+
+    public override void OnInspectorGUI()
+    {
+        serializedObject.Update();
+
+        EditorGUILayout.PropertyField(_inputOrgan);
+        EditorGUILayout.PropertyField(m_obstructionMask);
+        EditorGUILayout.PropertyField(m_targetMask);
+
+            EditorGUILayout.Space();
+            EditorGUILayout.LabelField("Sensing Parameters", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+
+            EditorGUILayout.LabelField("Clue Weights", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.PropertyField(_clueWeightsProp);
+            EditorGUILayout.EndVertical();
+            
+            EditorGUILayout.LabelField("Hearing", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.PropertyField(_hearingRangeProp);
+            EditorGUILayout.EndVertical();
+            
+            EditorGUILayout.LabelField("Sight", EditorStyles.boldLabel);
+            EditorGUILayout.BeginVertical(EditorStyles.helpBox);
+                EditorGUILayout.PropertyField(_sightFurstrumProp);
+            EditorGUILayout.EndVertical();
+
+        EditorGUILayout.EndVertical();
+
+        serializedObject.ApplyModifiedProperties();
+    }
+    
     private void OnSceneGUI()
     {
         ObserverModule observer = (ObserverModule) target;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using Game.World;
+using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
@@ -14,10 +15,12 @@ public class ObserverModule : MonoBehaviour
     [SerializeField] private LayerMask m_obstructionMask;
     [SerializeField] public Transform _inputOrgan;
     
-    [Header("Hear SubModule")]
-    [SerializeField] public float _hearingRange;
+    
+    // this map is used to add multipliers for detection algorithm. certain situations make it easier for player to get detected.
+    [SerializeField] private ClueWeights _clueWeights;
 
-    [Header("See Submodule")]
+    [SerializeField] public float _hearingRange;
+    
     [SerializeField] public SightParameters _sightFurstrum;
 
     private const float m_updatePerSecond = .25f;
@@ -94,6 +97,17 @@ public class ObserverModule : MonoBehaviour
         public float SightRange;
         [Range(0, 360)]
         public float ConeAngle;
+    }
+
+    [Serializable]
+    public struct ClueWeights
+    {
+        [Range(0, 1f)]
+        public float _lightIntensity;
+        [Range(0, 1f)]
+        public float _proximity;
+        [Range(0, 1f)]
+        public float _playerMovementSpeed;
     }
 }
 

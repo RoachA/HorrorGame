@@ -129,7 +129,7 @@ Material:
     - _Glossiness: 0
     - _GlossyReflections: 0
     - _Metallic: 0
-    - _Metallicness: 0.4
+    - _Metallicness: 0.25
     - _OcclusionStrength: 1
     - _PaintOffset: -0.85
     - _Parallax: 0.005
@@ -152,16 +152,17 @@ Material:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _Color0: {r: 1, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LeakColoration: {r: 0.8018868, g: 0.8018868, b: 0.8018868, a: 1}
-    - _LeakDefiniton: {r: 0.02, g: 0, b: 0, a: 0}
-    - _LeakTile: {r: 0.1, g: 0.23, b: 0, a: 0}
-    - _MaskTile: {r: 0.26, g: -0.2, b: 0, a: 0}
+    - _LeakColoration: {r: 0.9528302, g: 0.885413, b: 0.885413, a: 1}
+    - _LeakDefiniton: {r: -0.01, g: 0.21, b: 0, a: 0}
+    - _LeakTile: {r: 1.21, g: 1, b: 0, a: 0}
+    - _LeakTileandOffset: {r: 0.76, g: -0.3, b: 0.18, a: 0}
+    - _MaskTile: {r: 0.33, g: -0.2, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 0.01, g: -0.005, b: 0, a: 0}
     - _Paint: {r: 0.30099666, g: 0.4578691, b: 0.7169812, a: 0}
     - _PaintVector: {r: 0, g: -0.056, b: 0, a: 0}
-    - _SmoothnessStep: {r: 0, g: 0.68, b: 0, a: 0}
+    - _SmoothnessStep: {r: 0.36, g: 0.99, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
-    - _Vector0: {r: 0, g: 0.05, b: 0, a: 0}
+    - _Vector0: {r: 1, g: 1, b: 0, a: 0}
     - _VerticalMapSharpness: {r: -2, g: 0.44, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5945483232175856216

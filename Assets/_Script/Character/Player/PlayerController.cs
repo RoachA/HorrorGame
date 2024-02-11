@@ -58,8 +58,7 @@ public class PlayerController : MonoBehaviour
     {
         HandleGravity();
         HandleSprint();
-
-        // Calculate movement inputs
+        
         float translation = Input.GetAxis("Vertical") * (m_isSprinting ? RunningSpeed : WalkingSpeed);
         float strafe = Input.GetAxis("Horizontal") * WalkingSpeed;
         

@@ -5,7 +5,7 @@ namespace Game.World
 {
     public class WorldEntity : MonoBehaviour, IHaveIdentity
     {
-        [SerializeField] private bool entityName;
+        [SerializeField] private string entityName;
         public int Id { get; set; }
         public GameObject Object { get; set; }
         [Inject] private readonly UniqueObjectsContainer _container;

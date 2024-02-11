@@ -5214,11 +5214,11 @@ MonoBehaviour:
   _defaultParams:
     ConeRanges: {x: 39, y: 100}
     Intensity: 6
-    Range: 6.5
+    Range: 8
   _focusedParams:
     ConeRanges: {x: 10, y: 70}
     Intensity: 11
-    Range: 25
+    Range: 30
   _lightSourceMesh: {fileID: 6190152292008514578}
 --- !u!65 &2007966010
 BoxCollider:
@@ -5521,7 +5521,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _interactibleDistance: 3
-  _mouseCamController: {fileID: 0}
+  _mouseCamController: {fileID: 4251605481729528458}
   _gameplayUI: {fileID: 0}
   _isDebugging: 0
 --- !u!143 &72490668
