@@ -79,7 +79,6 @@ public class EnemyController : WorldEntity
 
     void LateUpdate()
     {
-        Debug.Log(_navMeshAgent.velocity);
         _animator.SetBool("CHASE", m_isChasing);
         _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
         _isPatrolling = m_isChasing == false;

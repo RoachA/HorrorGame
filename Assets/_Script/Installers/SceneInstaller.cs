@@ -9,11 +9,13 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
     readonly SignalBus _signalBus;
     
     [SerializeField] private PlayerController _playerController;
+    [SerializeField] private AudioManager _audioManager;
     
     public override void InstallBindings()
     {
         SignalBusInstaller.Install(Container);
         Container.Bind<PlayerController>().FromInstance(_playerController).AsSingle();
+        Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
         Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<CoreSignals>().AsSingle();
         Container.Bind<UniqueObjectsContainer>().AsSingle();

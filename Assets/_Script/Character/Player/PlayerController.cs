@@ -1,6 +1,7 @@
 using System;
 using Cinemachine;
 using UnityEngine;
+using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,6 +23,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    [Inject] private readonly AudioManager _audioManager;
     [SerializeField] private CinemachineVirtualCamera _vCam;
     [SerializeField] private Camera _gameCam;
     [Header("Movement")]
@@ -33,6 +35,9 @@ public class PlayerController : MonoBehaviour
     
     [Header("Flash Light")]
     [SerializeField] private FlashLightHandler _flashLight;
+    
+    [Header("Sfx")]
+    [SerializeField] private float _footstepRate = 1.5f;
     
     private bool m_isSprinting;
     private Vector3 m_moveVector;
@@ -50,20 +55,44 @@ public class PlayerController : MonoBehaviour
     // Use this for initialization
     private void Start()
     {
-        m_characterController = GetComponent<CharacterController>();
+        m_characterController = GetComponent<CharacterController>(); 
+        m_floorMask = LayerMask.GetMask($"Floor");
     }
 
     // Update is called once per frame
     private void FixedUpdate()
     {
         HandleGravity();
+        HandleWalk();
         HandleSprint();
-        
-        float translation = Input.GetAxis("Vertical") * (m_isSprinting ? RunningSpeed : WalkingSpeed);
-        float strafe = Input.GetAxis("Horizontal") * WalkingSpeed;
-        
-        Vector3 movement = new Vector3(strafe * Time.fixedDeltaTime, 0, translation * Time.fixedDeltaTime);
-        m_characterController.Move(transform.TransformDirection(movement));
+
+        HandleFootstepSfx();
+    }
+    
+    private float time = 0;
+    private LayerMask m_floorMask;
+    
+    private void HandleFootstepSfx()
+    {
+        time += Time.deltaTime;
+       if (m_characterController.velocity.magnitude == 0) return;
+
+       if (time > _footstepRate / m_characterController.velocity.magnitude)
+       {
+           RaycastHit hit;
+           FloorSurfaceType floorType = FloorSurfaceType.Concrete;
+           Debug.DrawRay(transform.position, Vector3.down * 5, Color.red, 1);
+           if (Physics.Raycast(transform.position, Vector3.down, out hit, 5f, m_floorMask))
+           {
+               if (hit.collider.CompareTag("Floor"))
+               {
+                   floorType = hit.collider.gameObject.GetComponent<FloorHandler>().GetSurfaceType();
+               }
+           }
+           
+           time = 0;
+           _audioManager.PlayFootstep(floorType, gameObject);
+       }
     }
 
     private void HandleGravity()
@@ -97,6 +126,15 @@ public class PlayerController : MonoBehaviour
         {
             _flashLight.SetLightParam(false);
         }
+    }
+
+    private void HandleWalk()
+    {
+        float translation = Input.GetAxis("Vertical") * (m_isSprinting ? RunningSpeed : WalkingSpeed);
+        float strafe = Input.GetAxis("Horizontal") * WalkingSpeed;
+        
+        Vector3 movement = new Vector3(strafe * Time.fixedDeltaTime, 0, translation * Time.fixedDeltaTime);
+        m_characterController.Move(transform.TransformDirection(movement));
     }
 
     private void HandleSprint()
