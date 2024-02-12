@@ -39,7 +39,7 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638433807915265136
+  lastModified: 638433820322469652
   FileSizes:
   - Name: Desktop
     Value: 1941568
@@ -96,7 +96,7 @@ MonoBehaviour:
   - {fileID: -5308171734629602577}
   StringsBanks:
   - {fileID: 8240691215189567878}
-  cacheTime: 638433807915285081
+  cacheTime: 638433820322489600
   cacheVersion: 131616
 --- !u!114 &2576007641670992635
 MonoBehaviour:
@@ -168,7 +168,7 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638433807915285081
+  lastModified: 638433820322489600
   FileSizes:
   - Name: Desktop
     Value: 900
