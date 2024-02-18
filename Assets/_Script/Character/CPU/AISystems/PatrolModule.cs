@@ -4,7 +4,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-public class PatrolManager : MonoBehaviour
+public class PatrolModule : EntityModuleBase
 {
    [SerializeField] public List<Vector3> _patrolNodes = new List<Vector3>();
    [SerializeField] private bool SetAsLoop = true;
@@ -60,7 +60,7 @@ public class PatrolManager : MonoBehaviour
    
 #if UNITY_EDITOR
 
-   [CustomEditor(typeof(PatrolManager))]
+   [CustomEditor(typeof(PatrolModule))]
    public class PatrolManagerEditor : Editor
    {
       private const float handleSize = 2;
@@ -69,7 +69,7 @@ public class PatrolManager : MonoBehaviour
       {
          base.OnInspectorGUI();
      
-         PatrolManager myScript = (PatrolManager) target;
+         PatrolModule myScript = (PatrolModule) target;
 
          GUILayout.BeginHorizontal();
          if (GUILayout.Button("Add New Nod At Center"))
@@ -87,7 +87,7 @@ public class PatrolManager : MonoBehaviour
       
       public void OnSceneGUI()
       {
-         var patrolClass = target as PatrolManager;
+         var patrolClass = target as PatrolModule;
 
          EditorGUI.BeginChangeCheck();
          for (int i = 0; i < patrolClass._patrolNodes.Count; i++)

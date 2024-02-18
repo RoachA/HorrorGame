@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using DG.Tweening;
 using Game.World;
@@ -11,48 +12,126 @@ public class EnemyController : WorldEntity
 {
     [Inject] private readonly SignalBus _bus;
     [Inject] private readonly PlayerController _player;
-    
+
     [Header("References")]
+    [SerializeField] private GameObject _container;
     [SerializeField] private Animator _animator;
     [SerializeField] private NavMeshAgent _navMeshAgent;
-    [SerializeField] private PatrolManager _patrolManager;
+    [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Patroller) == EnemyBehaviorFlags.Patroller")]
     [SerializeField] private LookAtIK _lookAtManager;
-
-    [Header("Enemy Behavior Parameters")]
-    [SerializeField] private float _timeUntilStopChase = 6f;
-    [SerializeField] private float _chaseSpeed = 1f;
+    
+    [Space]
+    [BoxGroup("AI")]
+    [EnumToggleButtons]
+    [SerializeField] public EnemyBehaviorFlags _activeBehaviors;
+    [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Patroller) == EnemyBehaviorFlags.Patroller")]
+    [BoxGroup("Patroller")]
     [SerializeField] private float _walkSpeed = 0.5f;
+    [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Chaser) == EnemyBehaviorFlags.Chaser")]
+    [BoxGroup("Chaser")]
+    [SerializeField] private float _chaseSpeed = 1f;
+    [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Chaser) == EnemyBehaviorFlags.Chaser")]
+    [BoxGroup("Chaser")]
+    [SerializeField] private float _timeUntilStopChase = 6f;
 
     private bool m_isChasing;
 
+    private bool _isObserving;
     private Vector3[] _pathArray; 
     private bool _isPatrolling = true;
     private int m_currentNodeIndex = 0;
     private Vector3 m_target_patrolPoint;
+    
+    //Action Routines
     private Coroutine _chaseRoutine;
+    private Coroutine _blinkRoutine;
     
     protected override void Start()
     {
         base.Start();
-        _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnSpotsPlayer);
-        _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightWasLost);
+        _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
+        _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
+        
+
+        if ((_activeBehaviors & EnemyBehaviorFlags.Teleporter) != 0)
+        {
+            _bus.Subscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
+            _container.SetActive(false);
+        }
+    }
+    
+    protected void OnDestroy()
+    {
+        _bus.TryUnsubscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
+        _bus.TryUnsubscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
+        _bus.TryUnsubscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
     }
 
-    private void OnSpotsPlayer(CoreSignals.PlayerWasSightedSignal signal)
+    private void OnTeleportRequested(CoreSignals.OnTeleportApprovedSignal signal)
     {
+        //here enemies check who will respond to the request.
+        if (signal.Enemy == this)
+        {
+            //the enemy tries to resolve what the signal's reaction request is.
+            if (signal.Reaction is BlinkAction blink)
+            {
+                HandleBlinkAction(blink);
+            }
+        }
+    }
+
+    BlinkAction _currentBlickAction;
+    private void HandleBlinkAction(BlinkAction blink)
+    {
+        switch (blink.StartType)
+        {
+            case BlinkStartType.OnPlayerView:
+                Debug.Log("Blink was triggered for " + gameObject.name);
+                _currentBlickAction = blink;
+                _isObserving = true;
+                SetModuleState<ObserverModule>(true);
+                GetModule<ObserverModule>().SetObserving(_isObserving);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
+    }
+
+    /// <summary>
+    /// A method that can do many things on sight. but is not robust. 
+    /// </summary>
+    /// <param name="signal"></param>
+    private void OnPlayerSighted(CoreSignals.PlayerWasSightedSignal signal)
+    {
+        if (GetModule<ObserverModule>() == false) return;
+        if (GetModule<ObserverModule>().isActiveAndEnabled == false) return;
+        if (_isObserving == false) return;
+        
         if (Id == signal.Agent.Id)
         {
             m_isChasing = true;
             
-            SetLookAtState(_player.transform, true, 0.5f);
-            if (_chaseRoutine != null)
+            if (_lookAtManager != null)
+                SetLookAtState(_player.transform, true, 0.5f);
+            
+            ///todo currently it chases ONLY if player is out of sight. it can also be like on sight.
+            if (_chaseRoutine != null && ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0))
                 StopCoroutine(_chaseRoutine);
+
+            if (((_activeBehaviors & EnemyBehaviorFlags.Teleporter) != 0))
+            {
+                _blinkRoutine = StartCoroutine(BlinkRoutine(null, _currentBlickAction.WaitTime));
+            }
         }
     }
 
-    private void OnPlayerSightWasLost(CoreSignals.PlayerSightWasLostSignal signal)
+    private void OnPlayerSightLost(CoreSignals.PlayerSightWasLostSignal signal)
     {
-        if (Id == signal.Agent.Id)
+        if (GetModule<ObserverModule>() == false) return;
+        if (GetModule<ObserverModule>().isActiveAndEnabled == false) return;
+        
+        //if it was chasing it stops.
+        if (Id == signal.Agent.Id && ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0))
         {
             SetLookAtState(_player.transform, false, 0.5f);
             _chaseRoutine = StartCoroutine(ChaseRoutine());
@@ -67,25 +146,32 @@ public class EnemyController : WorldEntity
 
     private void SetupDependencies()
     {
-        if (_navMeshAgent == null) GetComponent<NavMeshAgent>();
         if (_animator == null) GetComponent<Animator>();
-        if (_patrolManager == null) GetComponent<PatrolManager>();
         if (_lookAtManager == null) GetComponent<LookAtIK>();
 
-        _pathArray = _patrolManager._patrolNodes.ToArray();
-        _animator.SetTrigger("WALK");
-        _lookAtManager.solver.SetLookAtWeight(0);
+        if ((_activeBehaviors & EnemyBehaviorFlags.Patroller) != 0 || (_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0)
+            PatrolDependencies();
+
+        void PatrolDependencies()
+        {
+            if (_navMeshAgent == null) GetComponent<NavMeshAgent>();
+            _pathArray = GetModule<PatrolModule>()._patrolNodes.ToArray();
+        }
+        
+        if (_animator != null) //todo will change
+            _animator.SetTrigger("WALK"); //todo will change
+        
+        if (_lookAtManager != null)
+            _lookAtManager.solver.SetLookAtWeight(0);
     }
 
     void LateUpdate()
     {
-        _animator.SetBool("CHASE", m_isChasing);
-        _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
-        _isPatrolling = m_isChasing == false;
+        //Chaser
+        if ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0) HandleChase();
         
-        HandleChase();
-        
-        if (_isPatrolling == false) return;
+        //Patroller
+        if (_isPatrolling == false || (_activeBehaviors & EnemyBehaviorFlags.Patroller) == 0) return;
         UpdateDestination();
 
         if (Vector3.Distance(transform.position, m_target_patrolPoint) < 0.5f)
@@ -100,6 +186,10 @@ public class EnemyController : WorldEntity
     
     private void HandleChase()
     {
+        _animator.SetBool("CHASE", m_isChasing);
+        _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
+        _isPatrolling = m_isChasing == false;
+        
         if (m_isChasing == false) return;
 
         if (m_currentChaseUpdateTick == m_chaseUpdateFreq) m_currentChaseUpdateTick = 0;
@@ -136,11 +226,24 @@ public class EnemyController : WorldEntity
         Debug.Log(Id + " has lost player at: " + Time.time.ToString("F3"));
     }
 
+    private IEnumerator BlinkRoutine(Action callback, float duration)
+    {
+        _container.SetActive(true);
+        yield return new WaitForSeconds(duration);
+        _container.SetActive(false);
+        GetModule<ObserverModule>().SetObserving(false);
+        _isObserving = false;
+        callback?.Invoke(); // the definition of this action may come from the module.
+    }
+
     private Sequence _lookSeq;
     private bool m_lastLookState;
+    
     private void SetLookAtState(Transform target, bool look, float lookSpeed = 1)
     {
         if (m_lastLookState == look) return;
+        if (_lookAtManager == null) return;
+        
         
         _lookAtManager.solver.target = target;
         _lookSeq?.Kill();
@@ -152,10 +255,21 @@ public class EnemyController : WorldEntity
         }));
     }
 
+    [BoxGroup("Patroller")]
+    [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Patroller) == EnemyBehaviorFlags.Patroller")]
     [Button]
     private void StartPatrol()
     {
         _isPatrolling = true;
     }
-    
+
+    [Flags]
+    public enum EnemyBehaviorFlags
+    {
+        None = 0,
+        Patroller = 1,
+        Teleporter = 2, 
+        Chaser = 4,
+        Attacker = 8,
+    }
 }

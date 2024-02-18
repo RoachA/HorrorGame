@@ -1,19 +1,16 @@
 using System;
 using System.Collections;
 using Game.World;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(EnemyController))]
-public class ObserverModule : MonoBehaviour
+public class ObserverModule : EntityModuleBase
 {
-    [Inject] private readonly PlayerController _player;
-    [Inject] private readonly SignalBus _bus;
-    
     [SerializeField] private LayerMask m_targetMask;
     [SerializeField] private LayerMask m_obstructionMask;
     [SerializeField] public Transform _inputOrgan;
+    [SerializeField] public bool _isObserving;
     
     
     // this map is used to add multipliers for detection algorithm. certain situations make it easier for player to get detected.
@@ -24,17 +21,26 @@ public class ObserverModule : MonoBehaviour
     [SerializeField] public SightParameters _sightFurstrum;
 
     private const float m_updatePerSecond = .25f;
-
-    private WorldEntity _entity;
+    private Coroutine m_fovRoutine;
     public bool _canSeePlayer;
-    public GameObject m_playerRef;
+    public GameObject _localPlayerRef;
     
-    private void Start()
+    
+    protected override void Start()
     {
-        if (m_playerRef == null)
-            m_playerRef = _player.gameObject;
-        StartCoroutine(FOVRoutine());
-        _entity = GetComponent<WorldEntity>();
+        base.Start();
+        _localPlayerRef = PlayerRef;
+    }
+
+    private void OnDisable()
+    {
+        if (m_fovRoutine != null) StopCoroutine(m_fovRoutine);
+    }
+
+    public void SetObserving(bool state)
+    {
+        if (state && m_fovRoutine != null) StopCoroutine(m_fovRoutine);
+        else m_fovRoutine = StartCoroutine(FOVRoutine());
     }
     
     private IEnumerator FOVRoutine()
@@ -66,7 +72,7 @@ public class ObserverModule : MonoBehaviour
 
                 if (!Physics.Raycast(_inputOrgan.transform.position, directionToTarget, distanceToTarget, m_obstructionMask))
                 {
-                    if (_canSeePlayer == false) _bus.Fire(new CoreSignals.PlayerWasSightedSignal(_entity, Time.time));
+                    if (_canSeePlayer == false) _bus.Fire(new CoreSignals.PlayerWasSightedSignal(ParentController, Time.time));
                     _canSeePlayer = true;
                 }
                 else
@@ -80,7 +86,7 @@ public class ObserverModule : MonoBehaviour
         else if (_canSeePlayer)
             _canSeePlayer = false;
         
-        if (wasSeen && _canSeePlayer == false) _bus.Fire(new CoreSignals.PlayerSightWasLostSignal(_entity, Time.time));
+        if (wasSeen && _canSeePlayer == false) _bus.Fire(new CoreSignals.PlayerSightWasLostSignal(ParentController, Time.time));
     }
     
     /// <summary>

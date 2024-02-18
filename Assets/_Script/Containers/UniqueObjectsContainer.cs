@@ -13,10 +13,6 @@ namespace Game.World
             {
                 _objects.Add(obj.Id, obj.Object);
             }
-            else
-            {
-                Debug.LogError($"Object with ID {obj.Object} is already registered.");
-            }
         }
 
         public GameObject GetObjectByID(int id)

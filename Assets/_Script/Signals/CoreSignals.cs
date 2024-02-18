@@ -1,5 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
+using Game.AI;
 using Game.World;
 using UnityEngine;
 
@@ -36,6 +35,33 @@ public class CoreSignals : MonoBehaviour
       {
          Agent = agent;
          Time = time;
+      }
+   }
+
+   public class PlayerTriggeredTeleportZoneSignal
+   {
+      public IHaveIdentity Area;
+      public float Time;
+
+      public PlayerTriggeredTeleportZoneSignal(IHaveIdentity area, float time)
+      {
+         Area = area;
+         Time = time;
+      }
+   }
+
+   public class OnTeleportApprovedSignal
+   {
+      public EnemyController Enemy;
+      public Vector3 TargetPos;
+      public IAction Reaction;
+      
+
+      public OnTeleportApprovedSignal(EnemyController enemy, Vector3 targetPos, IAction reaction)
+      {
+         Enemy = enemy;
+         TargetPos = targetPos;
+         Reaction = reaction;
       }
    }
 }

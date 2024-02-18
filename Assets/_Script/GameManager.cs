@@ -1,10 +1,6 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Globalization;
 using Game.UI;
 using UnityEngine;
-using UnityEngine.Rendering.UI;
 using Zenject;
 
 public class GameManager : MonoBehaviour
@@ -20,6 +16,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         timeleft = updateInterval;
+        //todo Gereksiz
         _bus.Subscribe<CoreSignals.DoorWasOpenedSignal>(OnDoorOpened);
         _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSpotted);
     }

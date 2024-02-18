@@ -18,11 +18,15 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
         Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<CoreSignals>().AsSingle();
+        Container.Bind<TeleportsManager>().AsSingle();
         Container.Bind<UniqueObjectsContainer>().AsSingle();
         
+        ///SIGNALS >>>>>>>>>>>>>>>>
         Container.DeclareSignal<CoreSignals.DoorWasOpenedSignal>();
         Container.DeclareSignal<CoreSignals.PlayerWasSightedSignal>();
         Container.DeclareSignal<CoreSignals.PlayerSightWasLostSignal>();
+        Container.DeclareSignal<CoreSignals.PlayerTriggeredTeleportZoneSignal>();
+        Container.DeclareSignal<CoreSignals.OnTeleportApprovedSignal>();
     }
 }
 

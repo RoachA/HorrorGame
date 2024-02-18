@@ -73,7 +73,7 @@ public class ObserverModuleEditor : Editor
         if (observer._canSeePlayer)
         {
             Handles.color = Color.green;
-            Handles.DrawLine(inputOrganTransform.position, observer.m_playerRef.transform.position);
+            Handles.DrawLine(inputOrganTransform.position, observer._localPlayerRef.transform.position);
         }
     }
 
