@@ -15,7 +15,7 @@ public enum AfterTeleportBehavior
 }
 
 [RequireComponent(typeof(EnemyController))]
-public class TeleporterModule : EntityModuleBase
+public class TeleporterModule : DynamicEntityModuleBase
 {
     [Inject] private readonly TeleportsManager _teleportsManager;
     
@@ -26,9 +26,9 @@ public class TeleporterModule : EntityModuleBase
     private Transform m_nodesContainer;
  
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         
         _nodeSpawnPos = transform.localPosition + Vector3.forward;
         if (ParentController == null) GetComponent<EnemyController>();

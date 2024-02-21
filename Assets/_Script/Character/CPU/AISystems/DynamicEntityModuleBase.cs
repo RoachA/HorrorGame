@@ -2,22 +2,22 @@ using Game.World;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(WorldEntity))]
-public class EntityModuleBase : MonoBehaviour
+[RequireComponent(typeof(DynamicEntity))]
+public class DynamicEntityModuleBase : MonoBehaviour
 {
     [Inject] protected readonly PlayerController _player;
     [Inject] protected readonly SignalBus _bus;
 
-    protected WorldEntity ParentController;
+    protected DynamicEntity ParentController;
     protected GameObject PlayerRef;
 
-    protected virtual void Start()
+    protected virtual void Awake()
     {
        if (PlayerRef == null)
                 PlayerRef = _player.gameObject;
 
        if (ParentController == null)
-           ParentController = GetComponent<WorldEntity>();
+           ParentController = GetComponent<DynamicEntity>();
 
        RegisterToParent();
     }

@@ -1,3 +1,4 @@
+using Game.Player;
 using Game.World;
 using UnityEngine;
 using Zenject;
@@ -14,13 +15,14 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
     public override void InstallBindings()
     {
         SignalBusInstaller.Install(Container);
+        Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<PlayerController>().FromInstance(_playerController).AsSingle();
         Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
-        Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<CoreSignals>().AsSingle();
         Container.Bind<TeleportsManager>().AsSingle();
-        Container.Bind<UniqueObjectsContainer>().AsSingle();
-        
+        Container.Bind<WorldObjectsContainer>().AsSingle();
+        Container.Bind<PlayerInventoryManager>().AsSingle();
+
         ///SIGNALS >>>>>>>>>>>>>>>>
         Container.DeclareSignal<CoreSignals.DoorWasOpenedSignal>();
         Container.DeclareSignal<CoreSignals.PlayerWasSightedSignal>();

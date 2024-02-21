@@ -3,25 +3,28 @@ using UnityEngine;
 
 namespace Game.World.Objects
 {
+   /// <summary>
+   /// it is an interactable item.
+   /// </summary>
    public interface IInteractable
    {
       protected InteractionMethod InteractionType { get; set; }
       protected bool IsActive { get; set; }
-      protected InteractionStat EndStat { get; set; }
-      protected InteractionStat StartStat { get; set; }
+      protected MouseInteractionStats EndStats { get; set; }
+      protected MouseInteractionStats StartStats { get; set; }
       public GameObject GetInteractionGameObject();
       
-      public void InteractStart(InteractionStat stat, Action callback = null);
+      public void InteractStart(MouseInteractionStats stats, Action callback = null);
 
-      public void InteractEnd(InteractionStat stat, Action callback = null);
+      public void InteractEnd(MouseInteractionStats stats, Action callback = null);
    }
    
-   public struct InteractionStat
+   public struct MouseInteractionStats
    {
       public float Time;
       public Vector2 MousePos;
 
-      public InteractionStat(float time, Vector2 mousePos)
+      public MouseInteractionStats(float time, Vector2 mousePos)
       {
          Time = time;
          MousePos = mousePos;
@@ -30,9 +33,7 @@ namespace Game.World.Objects
 
    public enum InteractionMethod
    {
-      Bool = 0,
-      ControlledWithX = 1,
-      ControllerWithY = 2,
-      ControlledWith2D = 3,
+      TapInteraction = 0,
+      MouseInteraction = 1,
    }
 }

@@ -1,12 +1,14 @@
 using UnityEngine;
-using Zenject;
-
 namespace Game.World
 {
+    /// <summary>
+    /// a unique and identifiable item.
+    /// </summary>
+    /// 
     public interface IHaveIdentity
     {
         /// <summary>
-        /// Also when generated, you may want to register this to UniqueObjectsContainer
+        /// Also when generated, you may want to register this to WorldObjectsContainer
         /// this container was registered as a single dependency on scene installer.
         /// </summary>
         /// 

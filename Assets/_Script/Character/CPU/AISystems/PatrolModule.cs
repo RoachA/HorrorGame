@@ -4,7 +4,7 @@ using UnityEditor;
 #endif
 using UnityEngine;
 
-public class PatrolModule : EntityModuleBase
+public class PatrolModule : DynamicEntityModuleBase
 {
    [SerializeField] public List<Vector3> _patrolNodes = new List<Vector3>();
    [SerializeField] private bool SetAsLoop = true;

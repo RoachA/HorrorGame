@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-public class EnemyController : WorldEntity
+public class EnemyController : DynamicEntity
 {
     [Inject] private readonly SignalBus _bus;
     [Inject] private readonly PlayerController _player;
@@ -48,6 +48,7 @@ public class EnemyController : WorldEntity
     
     protected override void Start()
     {
+        SetupDependencies();
         base.Start();
         _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
         _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
@@ -139,11 +140,6 @@ public class EnemyController : WorldEntity
         }
     }
     
-    private void Awake()
-    {
-        SetupDependencies();
-    }
-
     private void SetupDependencies()
     {
         if (_animator == null) GetComponent<Animator>();

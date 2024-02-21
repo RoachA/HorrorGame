@@ -10,7 +10,7 @@ using Zenject;
 public class TeleportNode : MonoBehaviour
 {
     [Inject] private readonly SignalBus _bus;
-    [Inject] private readonly UniqueObjectsContainer _uniqueObjectsContainer;
+    [Inject] private readonly WorldObjectsContainer m_worldObjectsContainer;
     
     [ReadOnly]
     [SerializeField] private EnemyController m_targetEntityModule;
@@ -36,7 +36,7 @@ public class TeleportNode : MonoBehaviour
 
     public void OnBoundTriggerActivated(IHaveIdentity areaId, float triggerInfluence)
     {
-        _uniqueObjectsContainer.RegisterObject(areaId);
+        m_worldObjectsContainer.RegisterObject(areaId);
         //this is for if we want to hear this from elsewhere.
         _bus.Fire(new CoreSignals.PlayerTriggeredTeleportZoneSignal(areaId, Time.time));
         

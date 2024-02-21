@@ -16,8 +16,8 @@ namespace Game.Character
         private bool m_interacting;
         private IInteractable m_interactionTarget;
         private IInteractable m_focusTarget;
-        private InteractionStat m_startStat;
-        private InteractionStat m_endStat;
+        private MouseInteractionStats m_startStats;
+        private MouseInteractionStats m_endStats;
 
         [SerializeField] private MouseCamLook _mouseCamController;
         [SerializeField] private GameplayPanelUi _gameplayUI;
@@ -109,8 +109,8 @@ namespace Game.Character
                         _mouseCamController.SetFocusMode(true);
                         
                         m_interactionTarget = interactableComponent;
-                        m_startStat = new InteractionStat(Time.time, Input.mousePosition);
-                        m_interactionTarget?.InteractStart(m_startStat);
+                        m_startStats = new MouseInteractionStats(Time.time, Input.mousePosition);
+                        m_interactionTarget?.InteractStart(m_startStats);
                     }
                 }
             }
@@ -119,8 +119,8 @@ namespace Game.Character
             {
                 Cursor.lockState = CursorLockMode.Locked;
                 _mouseCamController.SetFocusMode(false);
-                m_endStat = new InteractionStat(Time.time, Input.mousePosition);
-                m_interactionTarget.InteractEnd(m_endStat);
+                m_endStats = new MouseInteractionStats(Time.time, Input.mousePosition);
+                m_interactionTarget.InteractEnd(m_endStats);
                 m_interactionTarget = null;
                 m_interacting = false;
             }

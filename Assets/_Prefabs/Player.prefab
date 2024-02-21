@@ -5072,7 +5072,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 247
+    m_Bits: 1271
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -5209,7 +5209,7 @@ MonoBehaviour:
   _focusedParams:
     ConeRanges: {x: 10, y: 70}
     Intensity: 11
-    Range: 30
+    Range: 80
   _lightSourceMesh: {fileID: 6190152292008514578}
 --- !u!65 &2007966010
 BoxCollider:

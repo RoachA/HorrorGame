@@ -20,8 +20,8 @@ namespace Game.World.Objects
         private Light m_light;
         private InteractionMethod m_interactionType;
         private bool m_isActive;
-        private InteractionStat m_endStat;
-        private InteractionStat m_startStat;
+        private MouseInteractionStats m_endStats;
+        private MouseInteractionStats m_startStats;
 
         InteractionMethod IInteractable.InteractionType
         {
@@ -33,15 +33,15 @@ namespace Game.World.Objects
             get => m_isActive;
             set => m_isActive = value;
         }
-        InteractionStat IInteractable.EndStat
+        MouseInteractionStats IInteractable.EndStats
         {
-            get => m_endStat;
-            set => m_endStat = value;
+            get => m_endStats;
+            set => m_endStats = value;
         }
-        InteractionStat IInteractable.StartStat
+        MouseInteractionStats IInteractable.StartStats
         {
-            get => m_startStat;
-            set => m_startStat = value;
+            get => m_startStats;
+            set => m_startStats = value;
         }
 
         protected override void Start()
@@ -56,13 +56,13 @@ namespace Game.World.Objects
             return this.gameObject;
         }
 
-        public void InteractStart(InteractionStat stat, Action callback = null)
+        public void InteractStart(MouseInteractionStats stats, Action callback = null)
         {
             m_isOn = !m_isOn;
             SetLightState(m_isActive);
         }
 
-        public void InteractEnd(InteractionStat stat, Action callback = null)
+        public void InteractEnd(MouseInteractionStats stats, Action callback = null)
         {
         }
 

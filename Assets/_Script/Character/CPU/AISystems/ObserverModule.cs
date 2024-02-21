@@ -5,7 +5,7 @@ using UnityEngine;
 using Zenject;
 
 [RequireComponent(typeof(EnemyController))]
-public class ObserverModule : EntityModuleBase
+public class ObserverModule : DynamicEntityModuleBase
 {
     [SerializeField] private LayerMask m_targetMask;
     [SerializeField] private LayerMask m_obstructionMask;
@@ -26,9 +26,9 @@ public class ObserverModule : EntityModuleBase
     public GameObject _localPlayerRef;
     
     
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
+        base.Awake();
         _localPlayerRef = PlayerRef;
     }
 
