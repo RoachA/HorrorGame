@@ -61144,6 +61144,10 @@ PrefabInstance:
       propertyPath: _gameplayUI
       value: 
       objectReference: {fileID: 8666649883793133958}
+    - target: {fileID: 2004771823, guid: 3e059ed339699ad4d849f95c6b8af580, type: 3}
+      propertyPath: m_Name
+      value: LightSource
+      objectReference: {fileID: 0}
     - target: {fileID: 868307185687321084, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
       propertyPath: m_RootOrder
@@ -61203,6 +61207,51 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 4251605481729528458, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: sensitivityRange.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 4251605481729528458, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: sensitivityRange.y
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4251605481729528458, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _bobbingProfiles.Array.data[1].Frequency
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4251605481729528458, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _bobbingProfiles.Array.data[1].ToggleSpeed
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095909191403727619, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _lerpSpeed
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095909191403727619, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: rotationSpeed
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095909191403727619, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _mouseInputBounds
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095909191403727619, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _flashLightClampAngle
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 6095909191403727619, guid: 3e059ed339699ad4d849f95c6b8af580,
+        type: 3}
+      propertyPath: _flashLightRotationSpeed
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 3e059ed339699ad4d849f95c6b8af580, type: 3}

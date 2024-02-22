@@ -329,9 +329,11 @@ MonoBehaviour:
   entityName: 0
   _door: {fileID: 542768237000430734}
   _doorHandle: {fileID: 5117744515937040016}
-  _torqueForce: 14
-  _inputRangeFromCenter: 350
-  _requiresKey: 0
+  _torqueForce: 20
+  _inputRangeFromCenter: 200
+  _requiresUnlocking: 0
+  _lockerType: 0
+  _keyEntity: {fileID: 0}
   _isLocked: 0
 --- !u!23 &1774927113100603645
 MeshRenderer:

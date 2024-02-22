@@ -9,6 +9,11 @@ public class FlashLightHandler : MonoBehaviour
     [SerializeField] private FlashLightParam _defaultParams;
     [SerializeField] private FlashLightParam _focusedParams;
     [SerializeField] private LightSourceMesher _lightSourceMesh;
+    
+    [Header("Mouse Control Parameters")]
+    [SerializeField] private float _flashLightRotationSpeed = 1;
+    [SerializeField] private float _lerpSpeed = 1f;
+    
     private Light m_light;
     private bool m_isObscured;
     private bool m_isOn = true;
@@ -31,8 +36,62 @@ public class FlashLightHandler : MonoBehaviour
         m_light = GetComponentInChildren<Light>();
         SetLightParam(false);
         _hasMesh = _lightSourceMesh;
+        lastMousePosition = transform.localEulerAngles;
+        originalPosition = lastMousePosition;
+    }
+    
+    private Vector2 lastMousePosition;
+    private Vector2 originalPosition;
+    
+    private void Update()
+    {
+        HandleLightRotation();
     }
 
+    private void HandleLightRotation()
+    {
+        Vector2 currentMousePosition = Input.mousePosition;
+        Vector2 mouseDelta = currentMousePosition - lastMousePosition;
+        lastMousePosition = currentMousePosition;
+        if (mouseDelta.magnitude == 0) ResetRotation();
+        
+        float rotationX = mouseDelta.x * _flashLightRotationSpeed;
+        float rotationY = mouseDelta.y * _flashLightRotationSpeed;
+        
+        var localAngle = transform.localEulerAngles;
+        
+        if (IsAngleBetween(localAngle.x - rotationY) == false) return;
+        if (IsAngleBetween(localAngle.y + rotationX) == false) return;
+        
+        transform.localEulerAngles = new Vector3(localAngle.x - rotationY, localAngle.y + rotationX, 0);
+    }
+
+    private void ResetRotation()
+    {
+        transform.localEulerAngles = Quaternion.Normalize(Quaternion.Lerp(Quaternion.Euler(transform.localEulerAngles), Quaternion.Euler(originalPosition), Time.deltaTime * _lerpSpeed)).eulerAngles;
+    }
+
+    private const float m_angleBound = 30f; 
+    
+    bool IsAngleBetween(float angle)
+    {
+        var min = -m_angleBound;
+        var max = m_angleBound;
+        
+        angle = (angle + 360) % 360;
+        min = (min + 360) % 360;
+        max = (max + 360) % 360;
+
+   
+        if (min > max)
+        {
+            return angle >= min || angle <= max;
+        }
+ 
+        return angle >= min && angle <= max;
+    }
+    
+    
     public void SetLightParam(bool isFocused)
     {
         _focusSeq.Kill();
@@ -66,12 +125,6 @@ public class FlashLightHandler : MonoBehaviour
                 if (_hasMesh) _lightSourceMesh.UpdateLight();
                 m_light.intensity = a;
             }));
-    }
-
-    private void SetRotation()
-    {
-        //add delayed ease to the light following the camera. 
-        //no light must go towards camera direction but a bit earlier.
     }
 
     private void OnTriggerEnter(Collider other)

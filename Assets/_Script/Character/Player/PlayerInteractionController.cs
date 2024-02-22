@@ -28,6 +28,8 @@ namespace Game.Character
             m_chrController = GetComponent<PlayerController>();
             m_cam = m_chrController.GameCam;
             m_focusTarget = null;
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.lockState = CursorLockMode.Confined;
         }
 
         private void Update()
@@ -105,7 +107,6 @@ namespace Game.Character
 
                     if (m_interacting && m_interactionTarget == null)
                     {
-                        Cursor.lockState = CursorLockMode.Confined;
                         _mouseCamController.SetFocusMode(true);
                         
                         m_interactionTarget = interactableComponent;
@@ -117,7 +118,6 @@ namespace Game.Character
 
             if (Input.GetMouseButtonUp(0) && m_interactionTarget != null)
             {
-                Cursor.lockState = CursorLockMode.Locked;
                 _mouseCamController.SetFocusMode(false);
                 m_endStats = new MouseInteractionStats(Time.time, Input.mousePosition);
                 m_interactionTarget.InteractEnd(m_endStats);

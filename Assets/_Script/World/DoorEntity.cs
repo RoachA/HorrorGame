@@ -125,11 +125,11 @@ namespace Game.World.Objects
 
         private void UpdateDoor()
         {
-            m_input_delta = m_startStats.MousePos.x - Input.mousePosition.x;
+            m_input_delta = m_startStats.MousePos.y - Input.mousePosition.y;
             var distanceDelta = Vector2.Distance(m_startStats.MousePos, Input.mousePosition);
             var clampedDelta = Mathf.Clamp(distanceDelta, -_inputRangeFromCenter, _inputRangeFromCenter);
             var interpolatedVal = Mathf.InverseLerp(-_inputRangeFromCenter, _inputRangeFromCenter, clampedDelta);
-            Vector3 torqueDirection = (m_input_delta >= 0) ? Vector3.up : Vector3.down;
+            Vector3 torqueDirection = (m_input_delta <= 0) ? Vector3.up : Vector3.down;
 
             Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
