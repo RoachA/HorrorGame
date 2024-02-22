@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 2004771825}
   - component: {fileID: 6190152292008514578}
   m_Layer: 7
-  m_Name: LightSoruce
+  m_Name: LightSource
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5211,6 +5211,8 @@ MonoBehaviour:
     Intensity: 11
     Range: 80
   _lightSourceMesh: {fileID: 6190152292008514578}
+  _flashLightRotationSpeed: 0.5
+  _lerpSpeed: 1
 --- !u!65 &2007966010
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5677,7 +5679,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Character: {fileID: 72490668}
   VCam: {fileID: 8731122498942300980}
-  sensitivityRange: {x: 2, y: 5}
+  sensitivityRange: {x: 0.5, y: 1.25}
   smoothing: 2
   _bobbingProfiles:
   - ToggleSpeed: 1
@@ -5686,9 +5688,9 @@ MonoBehaviour:
     UsePerlinNoise: 0
     CameraShakeAmplitude: 0
     CameraShakeFrequency: 0.1
-  - ToggleSpeed: 4
+  - ToggleSpeed: 3
     Amplitude: 0.05
-    Frequency: 20
+    Frequency: 15
     UsePerlinNoise: 1
     CameraShakeAmplitude: 0.12
     CameraShakeFrequency: 0.1
