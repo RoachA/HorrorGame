@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using DG.Tweening;
 using Game.Player;
 using Game.UI;
@@ -7,6 +8,8 @@ using Sirenix.OdinInspector;
 #endif
 using UnityEngine;
 using Zenject;
+using Vector2 = UnityEngine.Vector2;
+using Vector3 = UnityEngine.Vector3;
 
 namespace Game.World.Objects
 {
@@ -132,7 +135,19 @@ namespace Game.World.Objects
             var distanceDelta = Vector2.Distance(m_startStats.MousePos, Input.mousePosition);
             var clampedDelta = Mathf.Clamp(distanceDelta, -_inputRangeFromCenter, _inputRangeFromCenter);
             var interpolatedVal = Mathf.InverseLerp(-_inputRangeFromCenter, _inputRangeFromCenter, clampedDelta);
-            Vector3 torqueDirection = (m_input_delta <= 0) ? Vector3.down + _player.transform.forward : Vector3.up + _player.transform.forward;
+            var playerTransform = _player.transform;
+            float playerAngle = Vector3.Angle(playerTransform.forward, transform.forward);
+            Vector3 torqueDirection = Vector3.zero;
+
+            Debug.Log(playerAngle);
+            if (m_input_delta > 0)
+            {
+                torqueDirection = playerAngle > 90 ? Vector3.down : Vector3.up;
+            }
+            else if (m_input_delta < 0)
+            {
+                torqueDirection = playerAngle > 90 ? Vector3.up : Vector3.down;
+            }
 
             Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);

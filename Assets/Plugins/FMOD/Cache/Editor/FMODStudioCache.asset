@@ -121,10 +121,10 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638443903023503812
+  lastModified: 638443914486501784
   FileSizes:
   - Name: Desktop
-    Value: 2435616
+    Value: 2478720
   Exists: 1
 --- !u!114 &-3075948425471120098
 MonoBehaviour:
@@ -208,7 +208,7 @@ MonoBehaviour:
   - {fileID: -5308171734629602577}
   StringsBanks:
   - {fileID: 8240691215189567878}
-  cacheTime: 638443903023533736
+  cacheTime: 638443914486522018
   cacheVersion: 131616
 --- !u!114 &1851714095243148725
 MonoBehaviour:
@@ -304,7 +304,7 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638443903023533736
+  lastModified: 638443914486522018
   FileSizes:
   - Name: Desktop
     Value: 1112
@@ -360,6 +360,6 @@ MonoBehaviour:
   IsGlobal: 0
   Labels:
   - Gory
-  - Value B
+  - DoorSlam
   - Value C
   Exists: 1

@@ -87,7 +87,7 @@ public class AudioManager : MonoBehaviour
             return;
         }
         
-        _sfxMap[sfx].setParameterByNameWithLabel("Door_Action_Type", exclamationType.ToString());
+        _sfxMap[sfx].setParameterByNameWithLabel("Exclamation_Type", exclamationType.ToString());
         _sfxMap[sfx].setParameterByName("Reverb", reverb);
         RuntimeManager.AttachInstanceToGameObject(_sfxMap[sfx], source.transform);
         _sfxMap[sfx].start();
@@ -125,4 +125,5 @@ public enum SfxType
 public enum ExclamationType
 {
     Gory = 0,
+    DoorSlam = 1,
 }
