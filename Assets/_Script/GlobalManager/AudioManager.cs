@@ -104,6 +104,19 @@ public class AudioManager : MonoBehaviour
         RuntimeManager.AttachInstanceToGameObject(_sfxMap[type], source.transform);
         _sfxMap[type].start();
     }
+
+    public void PlayGenericOneShot(SfxType type, GameObject source, string targetParameter, string targetVal)
+    {
+        if (_sfxMap.ContainsKey(type) == false)
+        {
+            Debug.LogWarning(type + " does not exist in the current array.");
+            return;
+        }
+        
+        _sfxMap[type].setParameterByNameWithLabel(targetParameter, targetVal);
+        RuntimeManager.AttachInstanceToGameObject(_sfxMap[type], source.transform);
+        _sfxMap[type].start();
+    }
 }
 
 [Serializable]
