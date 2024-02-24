@@ -12,8 +12,10 @@ namespace Game.World.Objects
 {
     public class DoorEntity : WorldEntity, IUnlockable
     {
+        [Inject] private PlayerController _player;
         [Inject] private SignalBus _signalBus;
         [Inject] private PlayerInventoryManager _inventoryManager;
+        [Inject] private AudioManager _audioManager;
 
         [Header("Door Parameters")]
         [BoxGroup("References")]
@@ -115,6 +117,7 @@ namespace Game.World.Objects
                 return;
             }
             
+            _audioManager.PlayDoorSound(DoorInteractionType.Locked, gameObject);
             ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. You need the key.";
         }
         
@@ -129,7 +132,7 @@ namespace Game.World.Objects
             var distanceDelta = Vector2.Distance(m_startStats.MousePos, Input.mousePosition);
             var clampedDelta = Mathf.Clamp(distanceDelta, -_inputRangeFromCenter, _inputRangeFromCenter);
             var interpolatedVal = Mathf.InverseLerp(-_inputRangeFromCenter, _inputRangeFromCenter, clampedDelta);
-            Vector3 torqueDirection = (m_input_delta <= 0) ? Vector3.up : Vector3.down;
+            Vector3 torqueDirection = (m_input_delta <= 0) ? Vector3.down + _player.transform.forward : Vector3.up + _player.transform.forward;
 
             Vector3 torque = torqueDirection * (interpolatedVal * _torqueForce);
             m_rbDoor.AddTorque(torque * Time.fixedDeltaTime, ForceMode.VelocityChange);
@@ -156,6 +159,7 @@ namespace Game.World.Objects
             
             ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_startStats.Time;
             _signalBus.Fire(new CoreSignals.DoorWasOpenedSignal(Id));
+            _audioManager.PlayDoorSound(DoorInteractionType.Open, gameObject);
             m_isActive = true;
             m_startStats = stats;
         }
@@ -166,6 +170,14 @@ namespace Game.World.Objects
             m_isActive = false;
             m_endStats = stats;
             UpdateHandle(false);
+            _audioManager.StopSound(SfxType.Door);
+        }
+
+        public enum DoorInteractionType
+        {
+            Open = 0,
+            Locked = 1,
+            Shut = 2,
         }
         
 #if UNITY_EDITOR     

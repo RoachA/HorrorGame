@@ -16,7 +16,7 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         timeleft = updateInterval;
-        //todo Gereksiz
+        Cursor.visible = false;
         _bus.Subscribe<CoreSignals.DoorWasOpenedSignal>(OnDoorOpened);
         _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSpotted);
     }

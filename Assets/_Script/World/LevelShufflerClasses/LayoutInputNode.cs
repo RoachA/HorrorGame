@@ -1,22 +1,44 @@
 using System;
-using System.Numerics;
-using DG.DemiLib;
+using System.Runtime.InteropServices;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEditor;
 using UnityEngine;
 using Zenject;
-using Vector2 = UnityEngine.Vector2;
 using Vector3 = UnityEngine.Vector3;
 
 namespace Game.World
 {
+    public enum PlayerEffectType
+    {
+        SwitchFlashLight = 0,
+        JitterFlashLight = 1,
+    }
+    
     public class LayoutInputNode : MonoBehaviour
     {
+        [Inject] private readonly AudioManager m_audioManager;
         [Inject] private readonly PlayerController m_player;
+        [Inject] private readonly SignalBus _bus;
         [Sirenix.OdinInspector.ReadOnly] [SerializeField]
         private LayoutBase _parentNode;
         [SerializeField] private LayoutNodeType _nodeProperties;
+
+        [BoxGroup("Affect Player")]
+        [SerializeField] private bool _affectPlayer;
+
+        [Sirenix.OdinInspector.ShowIf("_affectPlayer")]
+        [BoxGroup("Affect Player")]
+        [SerializeField] private PlayerEffectType _effectType;
+
+        [BoxGroup("Audio Cue")]
+        [SerializeField] private bool _audioCue;
+        [Sirenix.OdinInspector.ShowIf("_audioCue")]
+        [BoxGroup("Audio Cue")]
+        [SerializeField] private GameObject _audioSourceObject;
+        [Sirenix.OdinInspector.ShowIf("_audioCue")]
+        [BoxGroup("Audio Cue")]
+        [SerializeField] private ExclamationType _cueType;
 
         [Sirenix.OdinInspector.ReadOnly]
         [SerializeField]
@@ -29,21 +51,21 @@ namespace Game.World
         private int _conditionsFulfilled;
 
         //TRIGGER NODE:
-        [ShowIf("@(this._nodeProperties & LayoutNodeType.OnTrigger) == LayoutNodeType.OnTrigger")]
+        [Sirenix.OdinInspector.ShowIf("@(this._nodeProperties & LayoutNodeType.OnTrigger) == LayoutNodeType.OnTrigger")]
         [BoxGroup("Trigger Check")]
         [SerializeField] private TriggerReadType _triggerType;
-        [ShowIf("@(this._nodeProperties & LayoutNodeType.OnTrigger) == LayoutNodeType.OnTrigger")]
+        [Sirenix.OdinInspector.ShowIf("@(this._nodeProperties & LayoutNodeType.OnTrigger) == LayoutNodeType.OnTrigger")]
         [BoxGroup("Trigger Check")]
         [SerializeField] private BoxCollider _triggerCollider;
         private Action _triggerCallBack;
         private bool m_isTriggerActive;
 
         //ROTATION NODE:
-        [ShowIf("@(this._nodeProperties & LayoutNodeType.OnPlayerRotation) == LayoutNodeType.OnPlayerRotation")]
+        [Sirenix.OdinInspector.ShowIf("@(this._nodeProperties & LayoutNodeType.OnPlayerRotation) == LayoutNodeType.OnPlayerRotation")]
         [BoxGroup("Rotation Check")]
         [SerializeField] private GameObject _rotationCheckingObject;
 
-        [ShowIf("@(this._nodeProperties & LayoutNodeType.OnPlayerRotation) == LayoutNodeType.OnPlayerRotation")]
+        [Sirenix.OdinInspector.ShowIf("@(this._nodeProperties & LayoutNodeType.OnPlayerRotation) == LayoutNodeType.OnPlayerRotation")]
         [BoxGroup("Rotation Check")]
         [SerializeField] private RotationCheckCondition _rotationCondition;
 
@@ -72,7 +94,49 @@ namespace Game.World
 
         private void FinalizeAndTerminateThisNode()
         {
+            if (_audioCue) CallForAudioFeedback();
+            if (_affectPlayer) CallForEffectOnPlayer();
             _parentNode.OnNodesWereTriggered();
+        }
+
+        private void CallForEffectOnPlayer()
+        {
+            switch (_effectType)
+            {
+                case PlayerEffectType.SwitchFlashLight:
+                    _bus.Fire(new CoreSignals.OnAffectFlashLightSignal(FlashLightAction.Switch));
+                    break;
+                case PlayerEffectType.JitterFlashLight:
+                    _bus.Fire(new CoreSignals.OnAffectFlashLightSignal(FlashLightAction.TriggerJitter, 4));
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        
+        [Sirenix.OdinInspector.ShowIf("_audioCue")]
+        [BoxGroup("Audio Cue")]
+        [Button]
+        private void CreateAudioObject()
+        {
+            if (_audioSourceObject != null) return;
+            var newSource = new GameObject("audio source");
+            newSource.transform.position = transform.position;
+            newSource.transform.SetParent(transform);
+
+            Selection.activeGameObject = _audioSourceObject;
+            _audioSourceObject = newSource;
+        }
+
+        private void CallForAudioFeedback()
+        {
+            if (_audioSourceObject == null)
+            {
+                _audioSourceObject = gameObject;
+                Debug.LogWarning(_parentNode.name + " has no audio source object, so it uses itself.");
+            }
+            
+            m_audioManager.PlayExclamation(_cueType, _audioSourceObject);
         }
 
         public void InitNode(LayoutBase layoutTarget)
@@ -156,18 +220,17 @@ namespace Game.World
 
         private void CheckPlayerRotation()
         {
+            if (_rotationCheckingObject == null) return;
             m_rotationCheckSuccess = false;
             _rotationCheckingObject.transform.LookAt(m_player.transform, Vector3.up);
             Vector3 forward = m_player.transform.forward;
             Vector3 toOther = _rotationCheckingObject.transform.position - m_player.transform.position;
             var dotVal = Vector3.Dot(forward, toOther);
 
-            if (_rotationCondition == RotationCheckCondition.OnFacing && dotVal <= 0.6f && dotVal >= -0.6f)
+            if (_rotationCondition == RotationCheckCondition.OnFacing && (dotVal <= 0.6f || dotVal >= -0.6f))
                 m_rotationCheckSuccess = true;
-            if (_rotationCondition == RotationCheckCondition.OnNotFacing && dotVal <= -3f && dotVal >= 3f)
+            if (_rotationCondition == RotationCheckCondition.OnNotFacing && (dotVal <= -3f || dotVal >= 3f))
                 m_rotationCheckSuccess = true;
-
-            Debug.Log(dotVal);
         }
 
         private void HandlePlayerRotationCheck()
@@ -201,6 +264,13 @@ namespace Game.World
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawLine(transform.position + Vector3.up, _parentNode.transform.position + Vector3.up);
+
+            if (_audioSourceObject != null)
+            {
+                Gizmos.DrawIcon(_audioSourceObject.transform.position + Vector3.up, "audio_gizmo");
+                Gizmos.color = Color.green * 0.8f; 
+                Gizmos.DrawWireSphere(_audioSourceObject.transform.position + Vector3.up, 3);
+            }
         }
     }
 

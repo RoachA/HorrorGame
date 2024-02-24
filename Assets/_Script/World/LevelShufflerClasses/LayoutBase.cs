@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;
+using Zenject;
 
 namespace Game.World
 {
     public class LayoutBase : WorldEntity
-    { 
+    {
+        [Inject] private readonly SignalBus _bus;
         [SerializeField] private List<LayoutInputNode> _layoutInputNodes;
 
+        public bool IsActive;
         private GameObject m_nodesContainer;
         private ZoneBase m_myZoneBase;
         
@@ -37,11 +40,27 @@ namespace Game.World
         {
             base.Start();
             m_myZoneBase = GetComponentInParent<ZoneBase>();
+
+            _bus.Subscribe<CoreSignals.OnLayoutStateUpdateSignal>(OnLayoutUpdateHappened);
+        }
+
+        private void OnDestroy()
+        {
+            _bus.TryUnsubscribe<CoreSignals.OnLayoutStateUpdateSignal>(OnLayoutUpdateHappened);
+        }
+
+        private void OnLayoutUpdateHappened(CoreSignals.OnLayoutStateUpdateSignal signal)
+        {
+            foreach (var node in _layoutInputNodes)
+            {
+                node.gameObject.SetActive(signal.Layout == this && signal.State);
+            }
         }
 
         public void OnNodesWereTriggered()
         {
-            if (m_myZoneBase != null) m_myZoneBase.OperateSwapActionOn(this);
+            if (isActiveAndEnabled == false) return;
+            if (m_myZoneBase != null) m_myZoneBase.ActivateTheNextLayout();
         }
 
         [Button]

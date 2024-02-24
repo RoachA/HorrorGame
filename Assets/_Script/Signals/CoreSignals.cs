@@ -64,4 +64,28 @@ public class CoreSignals : MonoBehaviour
          Reaction = reaction;
       }
    }
+
+   public class OnLayoutStateUpdateSignal
+   {
+      public LayoutBase Layout;
+      public bool State;
+
+      public OnLayoutStateUpdateSignal(LayoutBase layout, bool state = true)
+      {
+         Layout = layout;
+         State = state;
+      }
+   }
+
+   public class OnAffectFlashLightSignal
+   {
+      public FlashLightAction ActionType;
+      public float Duration;
+
+      public OnAffectFlashLightSignal(FlashLightAction actionType, float duration = 1)
+      {
+         ActionType = actionType;
+         Duration = duration;
+      }
+   }
 }

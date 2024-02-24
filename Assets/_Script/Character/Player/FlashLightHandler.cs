@@ -1,9 +1,18 @@
 using System;
+using System.Threading.Tasks;
 using DG.Tweening;
 using UnityEngine;
+using Zenject;
 
+public enum FlashLightAction
+{
+    Switch = 0,
+    TriggerJitter = 1,
+}
 public class FlashLightHandler : MonoBehaviour
 {
+    [Inject] private readonly SignalBus _signalBus;
+    [Inject] private readonly AudioManager _audioManager;
     [SerializeField] private Vector2 _offsetMultiplier = new Vector2(0.5f, 2f);
     [SerializeField] private float _offsettingDuration = .5f;
     [SerializeField] private FlashLightParam _defaultParams;
@@ -38,6 +47,23 @@ public class FlashLightHandler : MonoBehaviour
         _hasMesh = _lightSourceMesh;
         lastMousePosition = transform.localEulerAngles;
         originalPosition = lastMousePosition;
+        
+        _signalBus.Subscribe<CoreSignals.OnAffectFlashLightSignal>(OnFlashLightActionRequest);
+    }
+
+    private async void OnFlashLightActionRequest(CoreSignals.OnAffectFlashLightSignal signal)
+    {
+        switch (signal.ActionType)
+        {
+            case FlashLightAction.Switch:
+                SwitchFlashlight();
+                break;
+            case FlashLightAction.TriggerJitter:
+                await StartJitterTask(signal.Duration);
+                break;
+            default:
+                throw new ArgumentOutOfRangeException();
+        }
     }
     
     private Vector2 lastMousePosition;
@@ -157,6 +183,18 @@ public class FlashLightHandler : MonoBehaviour
         
         _lightSourceMesh.gameObject.SetActive(m_isOn);
         m_light.intensity = m_isOn ? _defaultParams.Intensity : 0;
+        _audioManager.PlayGenericOneShot(SfxType.Flashlight, gameObject);
+    }
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="duration"> in seconds</param>
+    public async Task StartJitterTask(float duration)
+    {
+        StartJitter();
+        await Task.Delay((int) (duration * 1000));
+        StopJitter();
     }
 
     [Sirenix.OdinInspector.Button]

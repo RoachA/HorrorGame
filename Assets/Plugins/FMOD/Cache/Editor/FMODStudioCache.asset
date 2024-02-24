@@ -1,5 +1,58 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8806846498014627103
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Door/Reverb
+  m_EditorClassIdentifier: 
+  Name: Reverb
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 404911726
+    data2: 3268807729
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
+--- !u!114 &-6771331190947431368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Exclamation
+  m_EditorClassIdentifier: 
+  Path: event:/Exclamation
+  Guid:
+    Data1: -2116070639
+    Data2: 1132680558
+    Data3: 1975299256
+    Data4: 488261983
+  Banks:
+  - {fileID: -5308171734629602577}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: 1851714095243148725}
+  - {fileID: 9048574043990947662}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-5683940835366609843
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -24,6 +77,35 @@ MonoBehaviour:
   IsGlobal: 0
   Labels: []
   Exists: 1
+--- !u!114 &-5432326314299248666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Door
+  m_EditorClassIdentifier: 
+  Path: event:/Door
+  Guid:
+    Data1: 1661992220
+    Data2: 1247756538
+    Data3: -1062965316
+    Data4: -1412465183
+  Banks:
+  - {fileID: -5308171734629602577}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters:
+  - {fileID: -8806846498014627103}
+  - {fileID: 8516684362766835518}
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 0
 --- !u!114 &-5308171734629602577
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -39,10 +121,10 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638433820322469652
+  lastModified: 638443903023503812
   FileSizes:
   - Name: Desktop
-    Value: 1941568
+    Value: 2435616
   Exists: 1
 --- !u!114 &-3075948425471120098
 MonoBehaviour:
@@ -73,6 +155,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-1512359446697760823
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/FlashLight
+  m_EditorClassIdentifier: 
+  Path: event:/FlashLight
+  Guid:
+    Data1: -1659018977
+    Data2: 1115107314
+    Data3: 2094433206
+    Data4: 1493647975
+  Banks:
+  - {fileID: -5308171734629602577}
+  IsStream: 0
+  Is3D: 0
+  IsOneShot: 1
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 161
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,13 +200,40 @@ MonoBehaviour:
   EditorEvents:
   - {fileID: -3075948425471120098}
   - {fileID: 5726467953842533544}
+  - {fileID: -5432326314299248666}
+  - {fileID: -6771331190947431368}
+  - {fileID: -1512359446697760823}
   EditorParameters: []
   MasterBanks:
   - {fileID: -5308171734629602577}
   StringsBanks:
   - {fileID: 8240691215189567878}
-  cacheTime: 638433820322489600
+  cacheTime: 638443903023533736
   cacheVersion: 131616
+--- !u!114 &1851714095243148725
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Exclamation/Reverb
+  m_EditorClassIdentifier: 
+  Name: Reverb
+  StudioPath: 
+  Min: 0
+  Max: 1
+  Default: 0
+  ID:
+    data1: 404911726
+    data2: 3268807729
+  Type: 0
+  IsGlobal: 0
+  Labels: []
+  Exists: 1
 --- !u!114 &2576007641670992635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -168,8 +304,62 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638433820322489600
+  lastModified: 638443903023533736
   FileSizes:
   - Name: Desktop
-    Value: 900
+    Value: 1112
+  Exists: 1
+--- !u!114 &8516684362766835518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Door/Door_Action_Type
+  m_EditorClassIdentifier: 
+  Name: Door_Action_Type
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 2856101226
+    data2: 1111563854
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Open
+  - Shut
+  - Locked
+  Exists: 1
+--- !u!114 &9048574043990947662
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fecb8ef7f94ca804a8ab72049b86782e, type: 3}
+  m_Name: parameter:/Exclamation/Exclamation_Type
+  m_EditorClassIdentifier: 
+  Name: Exclamation_Type
+  StudioPath: 
+  Min: 0
+  Max: 2
+  Default: 0
+  ID:
+    data1: 4245410249
+    data2: 3373273554
+  Type: 2
+  IsGlobal: 0
+  Labels:
+  - Gory
+  - Value B
+  - Value C
   Exists: 1

@@ -29,6 +29,8 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.DeclareSignal<CoreSignals.PlayerSightWasLostSignal>();
         Container.DeclareSignal<CoreSignals.PlayerTriggeredTeleportZoneSignal>();
         Container.DeclareSignal<CoreSignals.OnTeleportApprovedSignal>();
+        Container.DeclareSignal<CoreSignals.OnLayoutStateUpdateSignal>();
+        Container.DeclareSignal<CoreSignals.OnAffectFlashLightSignal>();
     }
 }
 

@@ -1,15 +1,14 @@
 using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
-using Sirenix.OdinInspector.Editor;
-using Sirenix.Utilities.Editor;
-using UnityEditor;
 using UnityEngine;
+using Zenject;
 
 namespace Game.World
 {
     public class ZoneBase : WorldEntity
     {
+        [Inject] private readonly SignalBus _bus;
         [SerializeField] private List<LayoutRegistry> _layoutUnits;
         private Queue<LayoutRegistry> _layoutsQueue;
 
@@ -26,12 +25,41 @@ namespace Game.World
         protected override void Start()
         {
             base.Start();
+            
+            if (_layoutsQueue == null)
+                _layoutsQueue = new Queue<LayoutRegistry>();
+            
             foreach (var unit in _layoutUnits)
             {
-                _layoutsQueue.Enqueue(unit); //when I enquque, each should be turned off except the first. I should track layout activity.
+                if (_layoutUnits.IndexOf(unit) == 0)
+                {
+                    unit.IsActive = true;
+                    _bus.Fire(new CoreSignals.OnLayoutStateUpdateSignal(unit.GroupA[0]));
+                }
+                else unit.IsActive = false;
+                
+                _layoutsQueue.Enqueue(unit);
             }
         }
+        
+        public void ActivateTheNextLayout()
+        {
+            if (_layoutsQueue == null || _layoutsQueue.Count == 0) return;
+            
+            LayoutRegistry nextLayoutRegistry = _layoutsQueue.Peek();
 
+            if (nextLayoutRegistry != null)
+            {
+                if (nextLayoutRegistry.KeepGroupA == false)
+                    nextLayoutRegistry.Swap();
+                _layoutsQueue.Dequeue();
+            }
+            
+            nextLayoutRegistry = _layoutsQueue?.Peek();
+            if (nextLayoutRegistry == null) return;
+            _bus.Fire(new CoreSignals.OnLayoutStateUpdateSignal(nextLayoutRegistry.GroupA[0]));
+        }
+        
         [Button]
         private void ResetAllLayouts()
         {
@@ -46,14 +74,6 @@ namespace Game.World
                 {
                     layout.gameObject.SetActive(false);
                 }
-            }
-        }
-
-        public void OperateSwapActionOn(LayoutBase targetLayout)
-        {
-            if (FindContainingRegistry(targetLayout, out var target) != false)
-            {
-                target.Swap();
             }
         }
 
@@ -79,8 +99,9 @@ namespace Game.World
     }
 
     [Serializable]
-    public struct LayoutRegistry
+    public class LayoutRegistry
     {
+        public bool KeepGroupA;
         public bool IsActive;
         public List<LayoutBase> GroupA;
         public List<LayoutBase> GroupB;
