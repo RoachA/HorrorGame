@@ -110,18 +110,24 @@ namespace Game.World.Objects
             }
         }
         
-        public void OnUnlockAttempt()
+        public bool OnUnlockAttempt()
         {
+            bool accessed = false;
             if (_inventoryManager.GetInventoryItem(_keyEntity.Id, out var key))
             {
                 _inventoryManager.RemoveFromInventory(key);
                 SetLockedState(false);
                 ScreenDubegger._objectUsedDebug = gameObject.name + " but is unlocked because the player has a key!";
-                return;
+                accessed = true;
             }
-            
+            else
+            {
+                ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. You need the key.";
+                accessed = false;
+            }
+
             _audioManager.PlayDoorSound(DoorInteractionType.Locked, gameObject);
-            ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. You need the key.";
+            return accessed;
         }
         
         public void SetLockedState(bool isLocked)
@@ -167,9 +173,11 @@ namespace Game.World.Objects
             UpdateHandle(true);
             if (_isLocked && _requiresUnlocking)
             {
-                OnUnlockAttempt();
-                ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. Interaction failed. ";
-                return;
+                if (OnUnlockAttempt() == false)
+                {
+                    ScreenDubegger._objectUsedDebug = gameObject.name + " is locked. Interaction failed. ";
+                    return;
+                }
             }
             
             ScreenDubegger._objectUsedDebug = "Started interacting with " + gameObject.name + "(" + Id + ")" + " at " + m_startStats.Time;

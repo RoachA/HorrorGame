@@ -8,7 +8,7 @@ namespace Game.World.Objects
     {
         public LockType LockType { get; set; }
         public bool LockedState { get; set; }
-        public void OnUnlockAttempt();
+        public bool OnUnlockAttempt();
         
         public KeyEntity Key { get; set; }
     }
