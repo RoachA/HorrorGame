@@ -70,7 +70,8 @@ namespace Game.Character
         {
             Ray observerRay = m_cam.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit observerHit;
-            
+            m_focusTarget = null;
+            ScreenDubegger._objectInFocusDebug = "";
             
             if (Physics.Raycast(observerRay, out observerHit, _interactibleDistance))
             {
@@ -83,13 +84,6 @@ namespace Game.Character
                     if (obj != null)
                         ScreenDubegger._objectInFocusDebug = "Focusing at " + obj.name;
                 }
-            }
-            else
-            {
-                if (m_interacting) return;
-
-                ScreenDubegger._objectInFocusDebug = "";
-                m_focusTarget = null;
             }
         }
 
@@ -128,7 +122,6 @@ namespace Game.Character
 
         private void Callback()
         {
-            throw new NotImplementedException();
         }
     }
 }

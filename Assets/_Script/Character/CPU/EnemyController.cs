@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-public class EnemyController : DynamicEntity
+public class EnemyController : LivingEntity
 {
     [Inject] private readonly SignalBus _bus;
     [Inject] private readonly PlayerController _player;

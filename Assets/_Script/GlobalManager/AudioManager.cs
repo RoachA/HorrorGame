@@ -117,6 +117,22 @@ public class AudioManager : MonoBehaviour
         RuntimeManager.AttachInstanceToGameObject(_sfxMap[type], source.transform);
         _sfxMap[type].start();
     }
+
+    public void PlayObjectInteractionSfx(GameObject obj, bool open, BoolObjectType type)
+    {
+        var key = open ? SfxType.Object_Open : SfxType.Object_Close;
+        
+        if (_sfxMap.ContainsKey(key) == false)
+        {
+            Debug.LogWarning(type + " does not exist in the current array.");
+            return;
+        }
+
+        var typeVal = type.ToString();
+        _sfxMap[key].setParameterByNameWithLabel("Object_Type", typeVal);
+        RuntimeManager.AttachInstanceToGameObject(_sfxMap[key], obj.transform);
+        _sfxMap[key].start();
+    }
 }
 
 [Serializable]
@@ -126,6 +142,12 @@ public struct SfxData
     public EventReference _event;
 }
 
+public enum BoolObjectType
+{
+    wood_drawer = 0,
+    wood_lid = 1,
+}
+
 public enum SfxType
 {
     Footstep = 0,
@@ -133,6 +155,8 @@ public enum SfxType
     Door = 2,
     Exclamation = 3,
     Flashlight = 4,
+    Object_Open = 5,
+    Object_Close = 6,
 }
 
 public enum ExclamationType

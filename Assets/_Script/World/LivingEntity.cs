@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Game.World
 {
-    public class DynamicEntity : WorldEntity
+    public class LivingEntity : WorldEntity
     {
         [Header("Modules Registry")]
         [SerializeField] public List<DynamicEntityModuleBase> RegisteredModules = new List<DynamicEntityModuleBase>();

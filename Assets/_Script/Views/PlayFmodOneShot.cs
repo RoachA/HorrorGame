@@ -11,11 +11,6 @@ public class PlayFmodOneShot : MonoBehaviour
     [SerializeField] private string _targetParam;
     [SerializeField] private string _targetParamVal;
     
-    private void Start()
-    {
-        throw new NotImplementedException();
-    }
-
     public void PlayAudio()
     {
         _audioManager.PlayGenericOneShot(_type, gameObject, _targetParam, _targetParamVal);
