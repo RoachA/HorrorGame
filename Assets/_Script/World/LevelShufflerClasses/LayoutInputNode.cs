@@ -1,20 +1,12 @@
 using System;
-using System.Runtime.InteropServices;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
-using UnityEditor;
 using UnityEngine;
 using Zenject;
 using Vector3 = UnityEngine.Vector3;
 
 namespace Game.World
 {
-    public enum PlayerEffectType
-    {
-        SwitchFlashLight = 0,
-        JitterFlashLight = 1,
-    }
-    
     public class LayoutInputNode : MonoBehaviour
     {
         [Inject] private readonly AudioManager m_audioManager;
@@ -24,22 +16,19 @@ namespace Game.World
         private LayoutBase _parentNode;
         [SerializeField] private LayoutNodeType _nodeProperties;
 
-        [BoxGroup("Affect Player")]
-        [SerializeField] private bool _affectPlayer;
+        [BoxGroup("Feedbacks")]
+        [SerializeField] private FeedbackBase _feedbackPlayer;
+        private bool m_isfeedbackNull => _feedbackPlayer == null;
 
-        [Sirenix.OdinInspector.ShowIf("_affectPlayer")]
-        [BoxGroup("Affect Player")]
-        [SerializeField] private PlayerEffectType _effectType;
-
-        [BoxGroup("Audio Cue")]
-        [SerializeField] private bool _audioCue;
-        [Sirenix.OdinInspector.ShowIf("_audioCue")]
-        [BoxGroup("Audio Cue")]
-        [SerializeField] private GameObject _audioSourceObject;
-        [Sirenix.OdinInspector.ShowIf("_audioCue")]
-        [BoxGroup("Audio Cue")]
-        [SerializeField] private ExclamationType _cueType;
-
+        [BoxGroup("Feedbacks")]
+        [Sirenix.OdinInspector.ShowIf("m_isfeedbackNull")]
+        [Button]
+        private void CreatePlayer()
+        {
+            if (_feedbackPlayer == null)
+                _feedbackPlayer = gameObject.AddComponent<FeedbackBase>();
+        }
+       
         [Sirenix.OdinInspector.ReadOnly]
         [SerializeField]
         [HorizontalGroup("Conditions")]
@@ -94,51 +83,13 @@ namespace Game.World
 
         private void FinalizeAndTerminateThisNode()
         {
-            if (_audioCue) CallForAudioFeedback();
-            if (_affectPlayer) CallForEffectOnPlayer();
+            if (_feedbackPlayer != null)
+                _feedbackPlayer.PlayFeedback();
+            
             _parentNode.OnNodesWereTriggered();
         }
 
-        private void CallForEffectOnPlayer()
-        {
-            switch (_effectType)
-            {
-                case PlayerEffectType.SwitchFlashLight:
-                    _bus.Fire(new CoreSignals.OnAffectFlashLightSignal(FlashLightAction.Switch));
-                    break;
-                case PlayerEffectType.JitterFlashLight:
-                    _bus.Fire(new CoreSignals.OnAffectFlashLightSignal(FlashLightAction.TriggerJitter, 4));
-                    break;
-                default:
-                    throw new ArgumentOutOfRangeException();
-            }
-        }
         
-        [Sirenix.OdinInspector.ShowIf("_audioCue")]
-        [BoxGroup("Audio Cue")]
-        [Button]
-        private void CreateAudioObject()
-        {
-            if (_audioSourceObject != null) return;
-            var newSource = new GameObject("audio source");
-            newSource.transform.position = transform.position;
-            newSource.transform.SetParent(transform);
-
-            Selection.activeGameObject = _audioSourceObject;
-            _audioSourceObject = newSource;
-        }
-
-        private void CallForAudioFeedback()
-        {
-            if (_audioSourceObject == null)
-            {
-                _audioSourceObject = gameObject;
-                Debug.LogWarning(_parentNode.name + " has no audio source object, so it uses itself.");
-            }
-            
-            m_audioManager.PlayExclamation(_cueType, _audioSourceObject);
-        }
-
         public void InitNode(LayoutBase layoutTarget)
         {
             _parentNode = layoutTarget;
@@ -162,9 +113,7 @@ namespace Game.World
             OnEnter = 0,
             OnExit = 1,
         }
-
-        private bool m_triggerCheckSuccess;
-
+        
         private void HandleTriggerCheck()
         {
             if ((_nodeProperties & LayoutNodeType.OnTrigger) != 0)
@@ -188,8 +137,6 @@ namespace Game.World
 
         private void OnTriggerEnter(Collider other)
         {
-            if (m_triggerCheckSuccess) return;
-
             if (other.CompareTag("Player") && _triggerType == TriggerReadType.OnEnter)
             {
                 //todo THERE ARE DIFFERENT TYPES OF CONDITIONALS - DYNAMIC BOOLS & 1 TIME ACTIVATIONS. I must find proper ways to keep mapping those at all times. and inform the parent.
@@ -200,8 +147,6 @@ namespace Game.World
 
         private void OnTriggerExit(Collider other)
         {
-            if (m_triggerCheckSuccess) return;
-
             if (other.CompareTag("Player") && _triggerType == TriggerReadType.OnExit)
             {
                 m_isTriggerActive = false;
@@ -264,13 +209,6 @@ namespace Game.World
         {
             Gizmos.color = Color.magenta;
             Gizmos.DrawLine(transform.position + Vector3.up, _parentNode.transform.position + Vector3.up);
-
-            if (_audioSourceObject != null)
-            {
-                Gizmos.DrawIcon(_audioSourceObject.transform.position + Vector3.up, "audio_gizmo");
-                Gizmos.color = Color.green * 0.8f; 
-                Gizmos.DrawWireSphere(_audioSourceObject.transform.position + Vector3.up, 3);
-            }
         }
     }
 
