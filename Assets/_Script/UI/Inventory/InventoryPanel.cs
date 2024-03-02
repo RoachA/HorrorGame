@@ -1,20 +1,29 @@
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using Game.Player;
 using Game.World.Objects;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Game.UI
 {
-    public class InventoryPanel : UiPanel
+    public interface IInventoryPanelParams : IUiParams
+    {
+    }
+    
+    public class InventoryPanel : UiPanel, IInventoryPanelParams
     {
         [Inject] private PlayerInventoryManager _inventoryManager;
+        [Inject] private UIManager _uiManager;
 
         [SerializeField] private Transform _inventoryItemsGrid;
         [SerializeField] private InventoryItemView _inventoryItemView;
         [SerializeField] private TextMeshProUGUI _itemNameTxt;
         [SerializeField] private TextMeshProUGUI _itemDescTxt;
+        [Header("Buttons")]
+        [SerializeField] private Button _lookButton; 
 
         private Dictionary<InventoryItemView, IObtainable> m_itemDataSet;
         private InventoryItemView _activeView;
@@ -23,13 +32,39 @@ namespace Game.UI
         {
             base.Close();
             ResetInventoryList();
+            _lookButton.onClick.RemoveListener(OnLookButtonPressed);
         }
 
-        protected override void Init()
+        protected override void Init(UIPanelParams data)
         {
             UpdateInventoryList();
+            
+            _lookButton.onClick.AddListener(OnLookButtonPressed);
         }
 
+        private void OnLookButtonPressed()
+        {
+            if (_activeView == null) return;
+            
+            if (GetViewData(_activeView, out var data))
+            {
+                _uiManager.OpenPanel<InventoryDetailPanel>(new InventoryDetailParams(data as ReadableItemData, true));
+            }
+        }
+
+        private bool GetViewData(InventoryItemView view, out ObtainableItemData data)
+        {
+            data = null;
+            
+            if (m_itemDataSet.ContainsKey(view))
+            {
+                data = m_itemDataSet[view].Data;
+                return true;
+            }
+
+            return false;
+        }
+        
         public void OnInventoryItemSelected(InventoryItemView view)
         {
             if (m_itemDataSet.ContainsKey(view))
@@ -41,6 +76,7 @@ namespace Game.UI
             foreach (var item in m_itemDataSet)
             {
                 item.Key.SetActiveState(item.Key == view);
+                _activeView = view;
             }
         }
         
@@ -64,6 +100,9 @@ namespace Game.UI
         
         private void ResetInventoryList()
         {
+            _itemDescTxt.text = "";
+            _itemNameTxt.text = "";
+            
             if (m_itemDataSet == null || m_itemDataSet.Count == 0) return;
 
             foreach (var item in m_itemDataSet)
@@ -75,8 +114,6 @@ namespace Game.UI
             }
             
             m_itemDataSet.Clear();
-            _itemDescTxt.text = "";
-            _itemNameTxt.text = "";
         }
     }
 }

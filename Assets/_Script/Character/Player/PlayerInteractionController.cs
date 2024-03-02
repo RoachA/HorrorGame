@@ -10,7 +10,7 @@ namespace Game.Character
 {
     public class PlayerInteractionController : MonoBehaviour
     {
-        [Inject] private readonly GameplayPanelUi _gameplayUI;
+        [Inject] private readonly UIManager m_gameplayUIManager;
         [Inject] private readonly SignalBus _bus;
         [SerializeField] private float _interactibleDistance = 1;
         
@@ -72,7 +72,7 @@ namespace Game.Character
             if (m_cachedState == state) return;
             
             m_cachedState = state;
-            _gameplayUI.UpdateCrosshair(state);
+            m_gameplayUIManager.UpdateCrosshair(state);
         }
 
         private void Observe()

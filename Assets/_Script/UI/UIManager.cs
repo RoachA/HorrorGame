@@ -1,11 +1,8 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using DG.Tweening;
 using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
-using UnityEngine.UI;
 using Zenject;
 
 namespace Game.UI
@@ -17,11 +14,14 @@ namespace Game.UI
         InUse = 2,
     }
     
-    public class GameplayPanelUi : MonoBehaviour
+    public class UIManager : MonoBehaviour
     {
         [Inject] private readonly SignalBus m_bus;
         [BoxGroup("UI Items")]
         [SerializeField] private InventoryPanel _inventoryPanel;
+        [BoxGroup("UI Items")]
+        [SerializeField] private InventoryDetailPanel _inventoryDetailPanel;
+        
         [SerializeField] private CrossHairView _crosshairView;
 
         [Space]
@@ -34,14 +34,20 @@ namespace Game.UI
 
         private List<UiPanel> _activePanels = new List<UiPanel>(); 
 
-        public void OpenPanel<T>() where T : UiPanel
+        public void OpenPanel<T>(UIPanelParams data) where T : UiPanel
         {
             if (_activePanels == null) _activePanels = new List<UiPanel>();
             
             if (typeof(T) == typeof(InventoryPanel))
             {
                 _activePanels.Add(_inventoryPanel);
-                _inventoryPanel.Open();
+                _inventoryPanel.Open(new UIPanelParams());
+            }
+
+            if (typeof(T) == typeof(InventoryDetailPanel))
+            {
+                _activePanels.Add(_inventoryPanel);
+                _inventoryDetailPanel.Open(data);
             }
             
             m_bus.Fire(new CoreSignals.OverwriteMouseLookSensitivitySignal(0.05f));

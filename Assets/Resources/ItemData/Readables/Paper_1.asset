@@ -1,0 +1,44 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b4108d5dc4ed8604db69b6c3ef616791, type: 3}
+  m_Name: Paper_1
+  m_EditorClassIdentifier: 
+  _3dObject: {fileID: 0}
+  _inventorySprite: {fileID: 21300000, guid: 4ada33dcd78248d47967eeda918ef348, type: 3}
+  _ItemName: Entry of "Second Invocation To Emperor Lucifer"
+  _Definition: 'The worn-out and dusty parchment, its surface weathered by time and
+    neglect, bears the weight of ages past.
+
+
+    The parchment before you holds
+    a fragment of the Solomonic manuscript. This particular excerpt delves into the
+    enigmatic Second Invocation to Emperor Lucifer, a pivotal incantation believed
+    to unlock profound secrets of power and illumination.'
+  _readableAssetSprite: {fileID: 21300000, guid: 6d4d5a75e6d6a0a488d6724548bf1842,
+    type: 3}
+  _readableText: 'Prior to reading of the Third invocation, if the Spirit doesn''t
+    appear, read the Clavicle as follows, and strike all of the Spirits, putting
+    the two ends of the fork of your rod in the fire. At this point do not be frightened
+    by the horrible cries that you will hear because all of the Spirits will appear.
+    Before reading the Clavicle, while the noise continues, read again the third
+    invocation.
+
+
+    "I command you, Emperor Lucifer, by the great living God, his
+    dear son and the Holy Ghost and by the power of the great ADONAY, ELOHIM, ARIEL
+    and JEHOVA, to appear now or send me your ASTAROTH. I command you to abandon
+    your dwelling in whatever part of the world it should be, declaring to you that
+    if you do not appear immediately, I will strike you and all of your cohorts again
+    with the Blasting Rod of the great ADONAY, ELOHIM, ARIEL and JEHOVA"
+
+
+    ...'

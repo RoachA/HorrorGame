@@ -12,7 +12,7 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
     
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private AudioManager _audioManager;
-    [SerializeField] private GameplayPanelUi _gameplayUI;
+    [SerializeField] private UIManager _gameplayUIManager;
     
     public override void InstallBindings()
     {
@@ -20,7 +20,7 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<PlayerController>().FromInstance(_playerController).AsSingle();
         Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
-        Container.Bind<GameplayPanelUi>().FromInstance(_gameplayUI).AsSingle();
+        Container.Bind<UIManager>().FromInstance(_gameplayUIManager).AsSingle();
         
         Container.Bind<CoreSignals>().AsSingle();
         Container.Bind<TeleportsManager>().AsSingle();

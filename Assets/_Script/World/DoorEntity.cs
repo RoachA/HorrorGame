@@ -168,7 +168,7 @@ namespace Game.World.Objects
                 _doorHandle.DOLocalRotate(isGrabbed ? Vector3.forward * 35f : Vector3.zero, 0.35f).SetEase(Ease.InOutBack));
         }
 
-        void IInteractable.InteractStart(MouseInteractionStats stats, Action callback)
+         void IInteractable.InteractStart(MouseInteractionStats stats, Action callback)
         {
             UpdateHandle(true);
             if (_isLocked && _requiresUnlocking)

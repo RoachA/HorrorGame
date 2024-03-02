@@ -24,7 +24,8 @@ public class PlayerController : MonoBehaviour
     }
 
     [Inject] private readonly AudioManager _audioManager;
-    [Inject] private readonly GameplayPanelUi _gameplayUi;
+    [Inject] private readonly UIManager m_gameplayUIManager;
+    
     [SerializeField] private CinemachineVirtualCamera _vCam;
     [SerializeField] private Camera _gameCam;
     [Header("Movement")]
@@ -86,8 +87,8 @@ public class PlayerController : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.I))
         {
-            if (_gameplayUi.TryClosePanel<InventoryPanel>()) return;
-            _gameplayUi.OpenPanel<InventoryPanel>();
+            if (m_gameplayUIManager.TryClosePanel<InventoryPanel>()) return;
+            m_gameplayUIManager.OpenPanel<InventoryPanel>(new UIPanelParams());
         }
     }
     

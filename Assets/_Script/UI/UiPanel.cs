@@ -1,19 +1,30 @@
 using UnityEngine;
+using Zenject;
 
 namespace Game.UI
 {
    public interface IUiPanelBase
    {
-      public void Open();
+      public void Open(UIPanelParams data);
 
       public void Close();
    }
 
-   public abstract class UiPanel : MonoBehaviour, IUiPanelBase
+   public interface IUiParams
    {
-      public virtual void Open()
+   }
+
+   public class UIPanelParams : IUiParams
+   {
+   }
+
+   public abstract class UiPanel : MonoBehaviour, IUiPanelBase, IUiParams
+   {
+      [Inject] protected UIManager _uiManager;
+      
+      public void Open(UIPanelParams data)
       {
-         Init();
+         Init(data);
          gameObject.SetActive(true);
       }
 
@@ -21,7 +32,7 @@ namespace Game.UI
       {
          gameObject.SetActive(false);
       }
-      
-      protected abstract void Init();
+
+      protected abstract void Init(UIPanelParams data);
    }
 }
