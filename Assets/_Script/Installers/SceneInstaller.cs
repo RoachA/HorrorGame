@@ -35,6 +35,8 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.DeclareSignal<CoreSignals.OnTeleportApprovedSignal>();
         Container.DeclareSignal<CoreSignals.OnLayoutStateUpdateSignal>();
         Container.DeclareSignal<CoreSignals.OnAffectFlashLightSignal>();
+        Container.DeclareSignal<CoreSignals.OverwriteMouseLookSensitivitySignal>();
+        Container.DeclareSignal<CoreSignals.SetCursorSignal>();
     }
 }
 

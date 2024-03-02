@@ -3,9 +3,12 @@ using Cinemachine;
 using Sirenix.OdinInspector;
 using Unity.Mathematics;
 using UnityEngine;
+using Zenject;
 
 public class MouseCamLook : MonoBehaviour
 {
+    [Inject] private readonly SignalBus m_bus;
+    
     [BoxGroup("References")]
     public CharacterController Character;
     [BoxGroup("References")]
@@ -24,6 +27,8 @@ public class MouseCamLook : MonoBehaviour
     private Vector2 m_smoothV;
     private bool _camLookActive = true;
     private bool m_walkBobbing = false;
+    private float m_sensitivity_multiplier = 1;
+    private float m_sensitivity_init;
 
     private Vector3 m_camStartPos;
     private CinemachineBasicMultiChannelPerlin m_noiseShakeComponent;
@@ -31,8 +36,10 @@ public class MouseCamLook : MonoBehaviour
     
 
     // Use this for initialization
-    private void Start() 
+    private void Start()
     {
+        m_sensitivity_init = m_sensitivity;
+        
         if (Character == null)
             Character = transform.GetComponentInParent<CharacterController>();
         
@@ -42,11 +49,19 @@ public class MouseCamLook : MonoBehaviour
         
         m_camStartPos = transform.localPosition;
         transform.rotation = quaternion.Euler(Vector3.zero);
+        
+        m_bus.Subscribe<CoreSignals.OverwriteMouseLookSensitivitySignal>(OnMouseLookActivationSwitched);
+    }
+
+    private void OnMouseLookActivationSwitched(CoreSignals.OverwriteMouseLookSensitivitySignal sensitivitySignal)
+    {
+        m_sensitivity_multiplier = sensitivitySignal.Sensitivity;
+       // _camLookActive = sensitivitySignal.State;
     }
 
     public void SetFocusMode(bool isFocusMode)
     {
-        m_sensitivity = isFocusMode ? sensitivityRange.x : sensitivityRange.y;
+        m_sensitivity_init = isFocusMode ? sensitivityRange.x : sensitivityRange.y;
     }
     
     // Update is called once per frame
@@ -55,6 +70,8 @@ public class MouseCamLook : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape)) _camLookActive = !_camLookActive;
         
         if (_camLookActive == false) return;
+
+        m_sensitivity = m_sensitivity_init * m_sensitivity_multiplier;
         
         var md = new Vector2(Input.GetAxisRaw("Mouse X"), Input.GetAxisRaw("Mouse Y"));
         md = Vector2.Scale(md, new Vector2(m_sensitivity * smoothing, m_sensitivity * smoothing));

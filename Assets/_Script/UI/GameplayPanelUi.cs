@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 namespace Game.UI
 {
@@ -18,6 +19,7 @@ namespace Game.UI
     
     public class GameplayPanelUi : MonoBehaviour
     {
+        [Inject] private readonly SignalBus m_bus;
         [BoxGroup("UI Items")]
         [SerializeField] private InventoryPanel _inventoryPanel;
         [SerializeField] private CrossHairView _crosshairView;
@@ -41,6 +43,9 @@ namespace Game.UI
                 _activePanels.Add(_inventoryPanel);
                 _inventoryPanel.Open();
             }
+            
+            m_bus.Fire(new CoreSignals.OverwriteMouseLookSensitivitySignal(0.05f));
+            m_bus.Fire(new CoreSignals.SetCursorSignal(true));
         }
 
         public bool TryClosePanel<T>() where T : UiPanel
@@ -49,6 +54,8 @@ namespace Game.UI
             {
                 panel.Close();
                 _activePanels.Remove(panel);
+                m_bus.Fire(new CoreSignals.OverwriteMouseLookSensitivitySignal(1f));
+                m_bus.Fire(new CoreSignals.SetCursorSignal(false));
                 return true;
             }
 

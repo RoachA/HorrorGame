@@ -32,6 +32,9 @@ public class FlashLightHandler : MonoBehaviour
     private Sequence _jitterSeq;
     private bool _hasMesh = false;
 
+    private float m_flashLightRotationSpeed_Multiplier = 1f;
+    private float m_rotationSpeedInit;
+
     [Serializable]
     private struct FlashLightParam
     {
@@ -42,6 +45,7 @@ public class FlashLightHandler : MonoBehaviour
     
     private void Start()
     {
+        m_rotationSpeedInit = _flashLightRotationSpeed;
         m_light = GetComponentInChildren<Light>();
         SetLightParam(false);
         _hasMesh = _lightSourceMesh;
@@ -49,6 +53,12 @@ public class FlashLightHandler : MonoBehaviour
         originalPosition = lastMousePosition;
         
         _signalBus.Subscribe<CoreSignals.OnAffectFlashLightSignal>(OnFlashLightActionRequest);
+        _signalBus.Subscribe<CoreSignals.OverwriteMouseLookSensitivitySignal>(OnSetMouseLookCalled);
+    }
+
+    private void OnSetMouseLookCalled(CoreSignals.OverwriteMouseLookSensitivitySignal sensitivitySignal)
+    {
+        m_flashLightRotationSpeed_Multiplier = sensitivitySignal.Sensitivity;
     }
 
     private async void OnFlashLightActionRequest(CoreSignals.OnAffectFlashLightSignal signal)
@@ -76,6 +86,8 @@ public class FlashLightHandler : MonoBehaviour
 
     private void HandleLightRotation()
     {
+        _flashLightRotationSpeed = m_flashLightRotationSpeed_Multiplier * m_rotationSpeedInit;
+        
         Vector2 currentMousePosition = Input.mousePosition;
         Vector2 mouseDelta = currentMousePosition - lastMousePosition;
         lastMousePosition = currentMousePosition;

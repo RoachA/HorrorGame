@@ -89,4 +89,24 @@ public class CoreSignals : MonoBehaviour
          Duration = duration;
       }
    }
+
+   public class OverwriteMouseLookSensitivitySignal
+   {
+      public float Sensitivity;
+
+      public OverwriteMouseLookSensitivitySignal(float sensitivity = 1f)
+      {
+         Sensitivity = sensitivity;
+      }
+   }
+
+   public class SetCursorSignal
+   {
+      public bool State;
+
+      public SetCursorSignal(bool state)
+      {
+         State = state;
+      }
+   }
 }

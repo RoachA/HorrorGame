@@ -11,6 +11,7 @@ namespace Game.Character
     public class PlayerInteractionController : MonoBehaviour
     {
         [Inject] private readonly GameplayPanelUi _gameplayUI;
+        [Inject] private readonly SignalBus _bus;
         [SerializeField] private float _interactibleDistance = 1;
         
         private PlayerController m_chrController;
@@ -31,6 +32,14 @@ namespace Game.Character
             m_focusTarget = null;
             Cursor.lockState = CursorLockMode.Locked;
             Cursor.lockState = CursorLockMode.Confined;
+            Cursor.visible = false;
+            _bus.Subscribe<CoreSignals.SetCursorSignal>(OnCursorSet);
+        }
+
+        private void OnCursorSet(CoreSignals.SetCursorSignal signal)
+        {
+            var state = signal.State;
+            Cursor.visible = state;
         }
 
         private void Update()
