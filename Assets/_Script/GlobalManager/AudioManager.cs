@@ -163,4 +163,5 @@ public enum ExclamationType
 {
     Gory = 0,
     DoorSlam = 1,
+    Whispers = 2,
 }

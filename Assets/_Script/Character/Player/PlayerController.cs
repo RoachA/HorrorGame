@@ -1,5 +1,5 @@
-using System;
 using Cinemachine;
+using Game.UI;
 using UnityEngine;
 using Zenject;
 
@@ -24,6 +24,7 @@ public class PlayerController : MonoBehaviour
     }
 
     [Inject] private readonly AudioManager _audioManager;
+    [Inject] private readonly GameplayPanelUi _gameplayUi;
     [SerializeField] private CinemachineVirtualCamera _vCam;
     [SerializeField] private Camera _gameCam;
     [Header("Movement")]
@@ -69,8 +70,26 @@ public class PlayerController : MonoBehaviour
         HandleFootstepSfx();
     }
     
+    private void Update()
+    {
+        HandleFlashLight();
+        HandleUIInteraction();
+    }
+    
     private float time = 0;
     private LayerMask m_floorMask;
+
+    /// <summary>
+    /// global UI entry is here for now!
+    /// </summary>
+    private void HandleUIInteraction()
+    {
+        if (Input.GetKeyDown(KeyCode.I))
+        {
+            if (_gameplayUi.TryClosePanel<InventoryPanel>()) return;
+            _gameplayUi.OpenPanel<InventoryPanel>();
+        }
+    }
     
     private void HandleFootstepSfx()
     {
@@ -104,12 +123,7 @@ public class PlayerController : MonoBehaviour
             m_characterController.Move(m_moveVector * Time.deltaTime);
         }
     }
-
-    private void Update()
-    {
-        HandleFlashLight();
-    }
-
+    
     private void HandleFlashLight()
     {
         if (Input.GetKeyDown(KeyCode.E))

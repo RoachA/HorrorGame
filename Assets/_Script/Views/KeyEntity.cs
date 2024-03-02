@@ -5,21 +5,12 @@ using Zenject;
 
 namespace Game.World.Objects
 {
-    public class KeyEntity : WorldEntity, IObtainable, IUnlock
+    public class KeyEntity : ObtainableEntity, IUnlock, IInteractable
     {
         [Inject] private PlayerInventoryManager _inventoryManager;
         [Inject] private WorldObjectsContainer _worldObjectsContainer;
         private InteractionMethod m_interactionType;
-        public ObtainableType Type { get; set; } = ObtainableType.Key;
-
-        InteractionMethod IInteractable.InteractionType { get; set; } = InteractionMethod.TapInteraction;
-
-        bool IInteractable.IsActive { get; set; }
-
-        MouseInteractionStats IInteractable.EndStats { get; set; }
-
-        MouseInteractionStats IInteractable.StartStats { get; set; }
-
+        
         private bool _wasObtained;
 
         public GameObject GetInteractionGameObject()
@@ -27,14 +18,14 @@ namespace Game.World.Objects
             return gameObject;
         }
 
-        public void InteractStart(MouseInteractionStats stats, Action callback = null)
+        void IInteractable.InteractStart(MouseInteractionStats stats, Action callback = null)
         {
             if (_wasObtained) return;
             OnObtained();
             OnDiscarded();
         }
 
-        public void InteractEnd(MouseInteractionStats stats, Action callback = null)
+        void IInteractable.InteractEnd(MouseInteractionStats stats, Action callback = null)
         {
         }
         

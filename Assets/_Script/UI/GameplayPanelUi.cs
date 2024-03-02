@@ -1,18 +1,28 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
+using Sirenix.OdinInspector;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace Game.UI
 {
+    public enum CrosshairStates
+    {
+        InActive = 0,
+        Active = 1,
+        InUse = 2,
+    }
+    
     public class GameplayPanelUi : MonoBehaviour
     {
-        [SerializeField] private Image _crosshair;
-      
-        [SerializeField] private Color _passiveColor;
-        [SerializeField] private Color _activeColor;
+        [BoxGroup("UI Items")]
+        [SerializeField] private InventoryPanel _inventoryPanel;
+        [SerializeField] private CrossHairView _crosshairView;
 
+        [Space]
         [Header("Debug Field")]
         [SerializeField] private bool _debugActive = true;
         [SerializeField] private TextMeshProUGUI _actionDebugTxt;
@@ -20,11 +30,43 @@ namespace Game.UI
         [SerializeField] private TextMeshProUGUI _playerPosTxt;
         [SerializeField] private TextMeshProUGUI _fps;
 
-        private Sequence m_crossHairSeq;
+        private List<UiPanel> _activePanels = new List<UiPanel>(); 
 
-        private void Start()
+        public void OpenPanel<T>() where T : UiPanel
         {
-            SetCrosshairState(CrosshairStates.InActive);
+            if (_activePanels == null) _activePanels = new List<UiPanel>();
+            
+            if (typeof(T) == typeof(InventoryPanel))
+            {
+                _activePanels.Add(_inventoryPanel);
+                _inventoryPanel.Open();
+            }
+        }
+
+        public bool TryClosePanel<T>() where T : UiPanel
+        {
+            if (TryGetPanelOfType(out T panel))
+            {
+                panel.Close();
+                _activePanels.Remove(panel);
+                return true;
+            }
+
+            return false;
+        }
+        
+        bool TryGetPanelOfType<T>(out T panel) where T : UiPanel
+        {
+            panel = _activePanels.OfType<T>().FirstOrDefault();
+            return panel != null;
+        }
+
+        public void UpdateCrosshair(CrosshairStates state)
+        {
+            if (_debugActive)
+                UpdateInteractionDebugText();
+            
+            _crosshairView.SetCrosshairState(state);
         }
 
         private void Update()
@@ -32,40 +74,14 @@ namespace Game.UI
             _playerPosTxt.text = ScreenDubegger.PlayerPos;
            _fps.text = ScreenDubegger.Fps;
         }
-
-        public void SetCrosshairState(CrosshairStates state)
-        {
-            if (_debugActive)
-                UpdateInteractionDebugText();
-            
-            if (state == CrosshairStates.InActive)
-            {
-                _crosshair.gameObject.SetActive(false);
-                return;
-            }
-            
-            _crosshair.gameObject.SetActive(true);
-            m_crossHairSeq?.Kill();
-            m_crossHairSeq = DOTween.Sequence();
-
-            m_crossHairSeq.Insert(0, _crosshair.transform.DOScale(state == CrosshairStates.InUse ? Vector3.one : Vector3.one * 1.5f, 0.35f).SetEase(Ease.InOutQuad));
-            m_crossHairSeq.Insert(0, _crosshair.DOColor(state == CrosshairStates.InUse ? _activeColor : _passiveColor, 0.35f).SetEase(Ease.InOutQuad));
-        }
-
+        
         public void UpdateInteractionDebugText()
         {
             _actionDebugTxt.text = ScreenDubegger._objectUsedDebug;
             _focusDebugTxt.text = ScreenDubegger._objectInFocusDebug;
         }
     }
-
-    public enum CrosshairStates
-    {
-        InActive = 0,
-        Active = 1,
-        InUse = 2,
-    }
-
+    
     public static class ScreenDubegger
     {
         public static string PlayerPos => SetPlayerPos(PlayerController.Instance.transform.position);

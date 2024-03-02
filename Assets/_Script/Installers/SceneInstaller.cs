@@ -1,4 +1,5 @@
 using Game.Player;
+using Game.UI;
 using Game.World;
 using UnityEngine;
 using Zenject;
@@ -11,6 +12,7 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
     
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private AudioManager _audioManager;
+    [SerializeField] private GameplayPanelUi _gameplayUI;
     
     public override void InstallBindings()
     {
@@ -18,6 +20,8 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.Bind<SceneInstaller>().AsSingle();
         Container.Bind<PlayerController>().FromInstance(_playerController).AsSingle();
         Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
+        Container.Bind<GameplayPanelUi>().FromInstance(_gameplayUI).AsSingle();
+        
         Container.Bind<CoreSignals>().AsSingle();
         Container.Bind<TeleportsManager>().AsSingle();
         Container.Bind<WorldObjectsContainer>().AsSingle();

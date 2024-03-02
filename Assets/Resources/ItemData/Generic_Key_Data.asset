@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29891a33778e0e542acd6dfabce21148, type: 3}
+  m_Name: Generic_Key_Data
+  m_EditorClassIdentifier: 
+  _inventorySprite: {fileID: 21300000, guid: e0c79221f4383bb4f917c58dc9331a94, type: 3}
+  _ItemName: Old Key
+  _Definition: "\"Encrusted with the patina of age and neglect, the old rusty key
+    exudes an air of mystery and antiquity. Its once-shining surface is now dulled
+    by the passage of time, adorned with patches of rust that cling to its weathered
+    frame like ancient battle scars. \n\n As you hold it in your hand, you can't
+    help but wonder about the stories it could tell and the journeys it has witnessed.\""

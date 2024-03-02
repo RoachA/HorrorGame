@@ -13,6 +13,18 @@ namespace Game.Player
             m_inventory = new Dictionary<ObtainableType, List<IObtainable>>();
         }
 
+        public List<IObtainable> GetAllInventoryItems()
+        {
+            var fullList = new List<IObtainable>();
+
+            foreach (var kv2 in m_inventory)
+            {
+                fullList.AddRange(kv2.Value);
+            }
+
+            return fullList;
+        }
+
         public void RegisterToInventory(IObtainable obtainedObj)
         {
             var typeOfObj = obtainedObj.Type;

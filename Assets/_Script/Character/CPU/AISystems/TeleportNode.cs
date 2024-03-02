@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Game.AI;
 using Game.World;
+using Game.World.Objects;
 using Sirenix.OdinInspector;
 using UnityEditor;
 using UnityEngine;

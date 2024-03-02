@@ -143,3 +143,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   entityName: DoorKey
+  _obtainableType: 0
+  obtainableItemData: {fileID: 11400000, guid: 09d37f9d14673864ca21961688e70c63, type: 2}

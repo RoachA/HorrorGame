@@ -13,10 +13,14 @@ namespace Game.World.Objects
       protected MouseInteractionStats EndStats { get; set; }
       protected MouseInteractionStats StartStats { get; set; }
       public GameObject GetInteractionGameObject();
-      
-      public void InteractStart(MouseInteractionStats stats, Action callback = null);
 
-      public void InteractEnd(MouseInteractionStats stats, Action callback = null);
+      public virtual void InteractStart(MouseInteractionStats stats, Action callback = null)
+      {
+      }
+
+      public virtual void InteractEnd(MouseInteractionStats stats, Action callback = null)
+      {
+      }
    }
    
    public struct MouseInteractionStats

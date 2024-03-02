@@ -1,5 +1,5 @@
 using UnityEngine;
-namespace Game.World
+namespace Game.World.Objects
 {
     /// <summary>
     /// a unique and identifiable item.

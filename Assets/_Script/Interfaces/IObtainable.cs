@@ -5,6 +5,8 @@ namespace Game.World.Objects
     /// </summary>
     public interface IObtainable : IInteractable, IHaveIdentity
     {
+        public ObtainableItemData Data { get; set; }
+        
         public ObtainableType Type { get; set; }
         /// <summary>
         /// Register to inventory if ok.
@@ -15,6 +17,7 @@ namespace Game.World.Objects
         /// get from inventory is ok and drop.
         /// </summary>
         public void OnDiscarded();
+        
     }
 
     public enum ObtainableType

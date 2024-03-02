@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using Game.World;
+using Game.World.Objects;
 using Sirenix.OdinInspector;
 using Unity.Collections;
 using UnityEditor;

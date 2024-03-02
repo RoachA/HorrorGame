@@ -4,11 +4,13 @@ using System.Collections.Generic;
 using Game.UI;
 using Game.World.Objects;
 using UnityEngine;
+using Zenject;
 
 namespace Game.Character
 {
     public class PlayerInteractionController : MonoBehaviour
     {
+        [Inject] private readonly GameplayPanelUi _gameplayUI;
         [SerializeField] private float _interactibleDistance = 1;
         
         private PlayerController m_chrController;
@@ -20,7 +22,6 @@ namespace Game.Character
         private MouseInteractionStats m_endStats;
 
         [SerializeField] private MouseCamLook _mouseCamController;
-        [SerializeField] private GameplayPanelUi _gameplayUI;
         [SerializeField] private bool _isDebugging;
 
         private void Start()
@@ -37,8 +38,7 @@ namespace Game.Character
             Observe();
             CheckAndInteract();
             HandleUI();
-         
-            
+
             if (_isDebugging) OnDebugActive();
         }
         
@@ -63,7 +63,7 @@ namespace Game.Character
             if (m_cachedState == state) return;
             
             m_cachedState = state;
-            _gameplayUI.SetCrosshairState(state);
+            _gameplayUI.UpdateCrosshair(state);
         }
 
         private void Observe()
