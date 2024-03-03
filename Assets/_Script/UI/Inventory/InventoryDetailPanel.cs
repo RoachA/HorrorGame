@@ -34,15 +34,21 @@ namespace Game.UI
             _descTxt.text = readableData.ItemData._readableText;
             _headerTxt.text = readableData.ItemData._ItemName;
             
-            _closeButton.onClick.AddListener(Close);
+            _closeButton.onClick.AddListener(() => Close());
             _uiManager.TryClosePanel<InventoryPanel>();
             m_returnToInventory = readableData.ReturnToIventory;
         }
 
-        public override void Close()
+        public override void Close(bool handleMouse = true)
         {
-            _closeButton.onClick.RemoveListener(Close);
-            if (m_returnToInventory) _uiManager.OpenPanel<InventoryPanel>(new UIPanelParams());
+            _closeButton.onClick.RemoveListener(() => Close());
+            if (m_returnToInventory)
+            {
+                _uiManager.OpenPanel<InventoryPanel>(new UIPanelParams());
+                base.Close(false);
+                return;
+            }
+            
             base.Close();
         }
     }

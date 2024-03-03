@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 29891a33778e0e542acd6dfabce21148, type: 3}
   m_Name: Generic_Key_Data
   m_EditorClassIdentifier: 
+  _3dObject: {fileID: 3569048688926936940, guid: c920972a88c4c8141a1a39682113733e,
+    type: 3}
   _inventorySprite: {fileID: 21300000, guid: e0c79221f4383bb4f917c58dc9331a94, type: 3}
   _ItemName: Old Key
   _Definition: "\"Encrusted with the patina of age and neglect, the old rusty key

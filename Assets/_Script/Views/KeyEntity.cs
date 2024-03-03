@@ -6,7 +6,7 @@ namespace Game.World.Objects
     {
         private InteractionMethod m_interactionType;
         
-        private void OnDrawGizmos()
+        protected override void OnDrawGizmos()
         {
             Gizmos.DrawIcon(transform.position + Vector3.up * 1.5f, "key_gizmo");
         }

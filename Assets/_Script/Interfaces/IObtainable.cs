@@ -6,6 +6,8 @@ namespace Game.World.Objects
     public interface IObtainable : IInteractable, IHaveIdentity
     {
         public ObtainableItemData Data { get; set; }
+
+        public abstract void Init();
         
         public ObtainableType Type { get; set; }
         /// <summary>

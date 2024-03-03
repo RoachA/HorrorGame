@@ -28,7 +28,7 @@ namespace Game.UI
         private Dictionary<InventoryItemView, IObtainable> m_itemDataSet;
         private InventoryItemView _activeView;
         
-        public override void Close()
+        public override void Close(bool handleMouse = true)
         {
             base.Close();
             ResetInventoryList();

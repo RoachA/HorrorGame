@@ -49,9 +49,6 @@ namespace Game.UI
                 _activePanels.Add(_inventoryPanel);
                 _inventoryDetailPanel.Open(data);
             }
-            
-            m_bus.Fire(new CoreSignals.OverwriteMouseLookSensitivitySignal(0.05f));
-            m_bus.Fire(new CoreSignals.SetCursorSignal(true));
         }
 
         public bool TryClosePanel<T>() where T : UiPanel
@@ -60,8 +57,6 @@ namespace Game.UI
             {
                 panel.Close();
                 _activePanels.Remove(panel);
-                m_bus.Fire(new CoreSignals.OverwriteMouseLookSensitivitySignal(1f));
-                m_bus.Fire(new CoreSignals.SetCursorSignal(false));
                 return true;
             }
 

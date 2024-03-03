@@ -12,7 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b4108d5dc4ed8604db69b6c3ef616791, type: 3}
   m_Name: Paper_1
   m_EditorClassIdentifier: 
-  _3dObject: {fileID: 0}
+  _3dObject: {fileID: 2498280495476839407, guid: c7b803f799f874d448c86b0b00c78a63,
+    type: 3}
   _inventorySprite: {fileID: 21300000, guid: 4ada33dcd78248d47967eeda918ef348, type: 3}
   _ItemName: Entry of "Second Invocation To Emperor Lucifer"
   _Definition: 'The worn-out and dusty parchment, its surface weathered by time and
