@@ -90,8 +90,8 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _WallBaseTexture:
-        m_Texture: {fileID: 2800000, guid: 61a265622b24eae4cafc2622c346dddf, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Texture: {fileID: 2800000, guid: 4761ec5c1ac4a6549805877406379ab8, type: 3}
+        m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _texcoord:
         m_Texture: {fileID: 0}
@@ -113,7 +113,7 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaCutoff: 0.5
-    - _BMaskOffset: -2.6
+    - _BMaskOffset: -0.38
     - _Blend: 0
     - _BottomMaskOffset: -1.49
     - _BumpScale: 1
@@ -157,13 +157,13 @@ Material:
     - _LeakTile: {r: 1.21, g: 1, b: 0, a: 0}
     - _LeakTileandOffset: {r: 0.76, g: -0.3, b: 0.18, a: 0}
     - _MaskTile: {r: 0.33, g: -0.2, b: 0, a: 0}
-    - _NoiseMapDefiniton: {r: 0.01, g: -0.005, b: 0, a: 0}
+    - _NoiseMapDefiniton: {r: 0.02, g: 0.01, b: 0, a: 0}
     - _Paint: {r: 0.30099666, g: 0.4578691, b: 0.7169812, a: 0}
     - _PaintVector: {r: 0, g: -0.056, b: 0, a: 0}
-    - _SmoothnessStep: {r: -0.33, g: 0.99, b: 0, a: 0}
+    - _SmoothnessStep: {r: 0.4, g: 0.99, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _Vector0: {r: 1, g: 1, b: 0, a: 0}
-    - _VerticalMapSharpness: {r: -2, g: 0.44, b: 0, a: 0}
+    - _VerticalMapSharpness: {r: 1.09, g: 0.79, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5945483232175856216
 MonoBehaviour:

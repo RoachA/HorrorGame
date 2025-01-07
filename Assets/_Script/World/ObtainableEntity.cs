@@ -24,6 +24,7 @@ namespace Game.World.Objects
         
         protected override void Start()
         {
+            base.Start();
             Init();
         }
         

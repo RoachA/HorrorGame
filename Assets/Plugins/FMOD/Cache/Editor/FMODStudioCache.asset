@@ -149,10 +149,10 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.bank
   Name: Master
   StudioPath: bank:/Master
-  lastModified: 638449818376396310
+  lastModified: 638450879804407547
   FileSizes:
   - Name: Desktop
-    Value: 2670400
+    Value: 2820928
   Exists: 1
 --- !u!114 &-5054487564355747100
 MonoBehaviour:
@@ -211,6 +211,33 @@ MonoBehaviour:
   MinDistance: 1
   MaxDistance: 20
   Length: 0
+--- !u!114 &-2177659588272516429
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ceb653cd98e289a4e8697a1af55201f2, type: 3}
+  m_Name: event:/Flies
+  m_EditorClassIdentifier: 
+  Path: event:/Flies
+  Guid:
+    Data1: 1509268673
+    Data2: 1281416466
+    Data3: 366025898
+    Data4: 201293408
+  Banks:
+  - {fileID: -5308171734629602577}
+  IsStream: 1
+  Is3D: 1
+  IsOneShot: 0
+  Parameters: []
+  MinDistance: 1
+  MaxDistance: 20
+  Length: 28000
 --- !u!114 &-1512359446697760823
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -288,12 +315,13 @@ MonoBehaviour:
   - {fileID: -1512359446697760823}
   - {fileID: -5054487564355747100}
   - {fileID: -6595170885127402905}
+  - {fileID: -2177659588272516429}
   EditorParameters: []
   MasterBanks:
   - {fileID: -5308171734629602577}
   StringsBanks:
   - {fileID: 8240691215189567878}
-  cacheTime: 638449818376426237
+  cacheTime: 638450879804437466
   cacheVersion: 131616
 --- !u!114 &1851714095243148725
 MonoBehaviour:
@@ -417,10 +445,10 @@ MonoBehaviour:
   Path: ../../../Users/anila/OneDrive/Desktop/MigrationPort/_HORROR/FMOD/horrorFmod/Build/Desktop/Master.strings.bank
   Name: Master.strings
   StudioPath: bank:/Master.strings
-  lastModified: 638449818376426237
+  lastModified: 638450879804437466
   FileSizes:
   - Name: Desktop
-    Value: 1244
+    Value: 1290
   Exists: 1
 --- !u!114 &8516684362766835518
 MonoBehaviour:

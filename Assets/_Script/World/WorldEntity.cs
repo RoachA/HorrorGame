@@ -18,11 +18,12 @@ namespace Game.World
             SetupUniqueIdentity();
         }
 
-        void SetupUniqueIdentity()
+        private void SetupUniqueIdentity()
         {
             Id = UniqueIDHelper.GenerateUniqueId(this);
             Object = gameObject;
             _container.RegisterObject(this);
+            Debug.Log(gameObject.name + " is registered with the unique id: " + Id);
         }
     }
 }

@@ -15,9 +15,8 @@ namespace Game.UI
     
     public class InventoryPanel : UiPanel, IInventoryPanelParams
     {
-        [Inject] private PlayerInventoryManager _inventoryManager;
-        [Inject] private UIManager _uiManager;
-
+        [Inject] private readonly PlayerInventoryManager _inventoryManager;
+     
         [SerializeField] private Transform _inventoryItemsGrid;
         [SerializeField] private InventoryItemView _inventoryItemView;
         [SerializeField] private TextMeshProUGUI _itemNameTxt;

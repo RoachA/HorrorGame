@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     private Dictionary<SfxType, EventInstance> _sfxMap;
     private Dictionary<SfxType, FMOD.Studio.EventInstance> _sfxInstances = new Dictionary<SfxType, FMOD.Studio.EventInstance>();
 
-    private void Start()
+    private void Awake()
     {
         _sfxMap = new Dictionary<SfxType, EventInstance>();
 
@@ -104,7 +104,7 @@ public class AudioManager : MonoBehaviour
         RuntimeManager.AttachInstanceToGameObject(_sfxMap[type], source.transform);
         _sfxMap[type].start();
     }
-
+    
     public void PlayGenericOneShot(SfxType type, GameObject source, string targetParameter, string targetVal)
     {
         if (_sfxMap.ContainsKey(type) == false)
@@ -157,6 +157,7 @@ public enum SfxType
     Flashlight = 4,
     Object_Open = 5,
     Object_Close = 6,
+    Flies = 7,
 }
 
 public enum ExclamationType

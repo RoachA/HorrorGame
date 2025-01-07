@@ -85,11 +85,11 @@ Material:
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Surface_1:
-        m_Texture: {fileID: 2800000, guid: 98d7e9bcd301d8348aebba5273e48c7c, type: 3}
+        m_Texture: {fileID: 2800000, guid: b3a38d6b6cc4a5347978b9ae8859e595, type: 3}
         m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     - _Surface_2:
-        m_Texture: {fileID: 2800000, guid: a29eaa8fabe9ea4419b1dfec6520d4b9, type: 3}
+        m_Texture: {fileID: 2800000, guid: 100180a9621218e4ca3cbe0b49fb2829, type: 3}
         m_Scale: {x: 2, y: 2}
         m_Offset: {x: 0, y: 0}
     - _Texture2:
@@ -149,7 +149,7 @@ Material:
     - _Surface: 0
     - _TMaskOffset: 0
     - _TopMaskOffset: 0
-    - _WaterSmoothness: 1.88
+    - _WaterSmoothness: 0.14
     - _WorkflowMode: 1
     - _ZWrite: 1
     m_Colors:
@@ -163,12 +163,12 @@ Material:
     - _MaskDefinition: {r: 0.03, g: 0.01, b: 0, a: 0}
     - _MaskTile: {r: 0.15, g: 0.15, b: 0, a: 0}
     - _NoiseMapDefiniton: {r: 0, g: 1, b: 0, a: 0}
-    - _Smoothness: {r: 3.03, g: -2.06, b: 0, a: 0}
+    - _Smoothness: {r: 3.03, g: 1.64, b: 0, a: 0}
     - _SmoothnessStep: {r: 0.79, g: 0, b: 0, a: 0}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _VerticalMapSharpness: {r: 0, g: 1, b: 0, a: 0}
-    - _WaterColor: {r: 0.38456747, g: 0.5471698, b: 0.48463374, a: 1}
-    - _WaterDefiniton: {r: 0.005, g: 0, b: 0, a: 0}
+    - _WaterColor: {r: 0.5849056, g: 0.5849056, b: 0.5849056, a: 1}
+    - _WaterDefiniton: {r: 0.01, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []
 --- !u!114 &5945483232175856216
 MonoBehaviour:

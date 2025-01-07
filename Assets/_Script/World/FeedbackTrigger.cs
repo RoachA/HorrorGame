@@ -1,4 +1,5 @@
 using System;
+using System.Threading.Tasks;
 using UnityEngine;
 using Sirenix.OdinInspector;
 
@@ -12,6 +13,11 @@ namespace Game.World
         [SerializeField] private BoxCollider _collider;
         [BoxGroup("Trigger Check")]
         [SerializeField] private LayoutInputNode.TriggerReadType _triggerType = LayoutInputNode.TriggerReadType.OnEnter;
+
+        [Space]
+        [SerializeField] private bool _destroyAfterTrigger;
+        [Range(0, 5f)]
+        [SerializeField] private float _destroyDelay;
 
         private void Start()
         {
@@ -28,7 +34,7 @@ namespace Game.World
         {
             if (other.CompareTag("Player") && _triggerType == LayoutInputNode.TriggerReadType.OnEnter)
             {
-                base.PlayFeedback();
+                PlayFeedback();
             }
         }
 
@@ -36,8 +42,21 @@ namespace Game.World
         {
             if (other.CompareTag("Player") && _triggerType == LayoutInputNode.TriggerReadType.OnExit)
             {
-                base.PlayFeedback();
+                PlayFeedback();
             }
+        }
+
+        public override void PlayFeedback()
+        {
+            base.PlayFeedback();
+            if (_destroyAfterTrigger) DestroyAfterDelay();
+        }
+
+        private async void DestroyAfterDelay()
+        {
+            var delay = Mathf.RoundToInt(_destroyDelay * 1000);
+            await Task.Delay(delay);
+            Destroy(gameObject);
         }
     }
 }
