@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using Zenject;
 
-public class EnemyController : LivingEntity
+public class EnemyEntity : DynamicEntity
 {
     [Inject] private readonly SignalBus _bus;
     [Inject] private readonly PlayerController _player;
@@ -19,7 +19,7 @@ public class EnemyController : LivingEntity
     [SerializeField] private NavMeshAgent _navMeshAgent;
     [ShowIf("@(this._activeBehaviors & EnemyBehaviorFlags.Patroller) == EnemyBehaviorFlags.Patroller")]
     [SerializeField] private LookAtIK _lookAtManager;
-    
+
     [Space]
     [BoxGroup("AI")]
     [EnumToggleButtons]
@@ -37,34 +37,41 @@ public class EnemyController : LivingEntity
     private bool m_isChasing;
 
     private bool _isObserving;
-    private Vector3[] _pathArray; 
+    private Vector3[] _pathArray;
     private bool _isPatrolling = true;
     private int m_currentNodeIndex = 0;
     private Vector3 m_target_patrolPoint;
-    
+
     //Action Routines
     private Coroutine _chaseRoutine;
     private Coroutine _blinkRoutine;
-    
+
     protected override void Start()
     {
         SetupDependencies();
         base.Start();
         _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
         _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
-        
+
 
         if ((_activeBehaviors & EnemyBehaviorFlags.Teleporter) != 0)
         {
             _bus.Subscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
             _container.SetActive(false);
         }
+
+        if ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0)
+        {
+            _bus.Subscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
+            _container.SetActive(false);
+        }
     }
-    
+
     protected void OnDestroy()
     {
         _bus.TryUnsubscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
         _bus.TryUnsubscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
+        _bus.TryUnsubscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
         _bus.TryUnsubscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
     }
 
@@ -81,7 +88,28 @@ public class EnemyController : LivingEntity
         }
     }
 
+    private void OnChaseRequested(CoreSignals.OnChaseApprovedSignal signal)
+    {
+        if (signal.Enemy == this)
+        {
+            if (signal.Reaction is ChaseAction chase)
+            {
+                HandleChaseAction(chase);
+            }
+        }
+    }
+
+    private ChaseAction _currentChaseAction;
+
+    private void HandleChaseAction(ChaseAction chase)
+    {
+        Debug.Log("Chase was triggered for " + gameObject.name + " it follows " + chase.ChaseTarget.gameObject.name);
+        _currentChaseAction = chase;
+        GetModule<ChaserModule>();
+    }
+
     BlinkAction _currentBlickAction;
+
     private void HandleBlinkAction(BlinkAction blink)
     {
         switch (blink.StartType)
@@ -90,7 +118,7 @@ public class EnemyController : LivingEntity
                 Debug.Log("Blink was triggered for " + gameObject.name);
                 _currentBlickAction = blink;
                 _isObserving = true;
-                SetModuleState<ObserverModule>(true);
+                SetModuleState<ObserverModule>(_isObserving);
                 GetModule<ObserverModule>().SetObserving(_isObserving);
                 break;
             default:
@@ -107,14 +135,14 @@ public class EnemyController : LivingEntity
         if (GetModule<ObserverModule>() == false) return;
         if (GetModule<ObserverModule>().isActiveAndEnabled == false) return;
         if (_isObserving == false) return;
-        
+
         if (Id == signal.Agent.Id)
         {
             m_isChasing = true;
-            
+
             if (_lookAtManager != null)
                 SetLookAtState(_player.transform, true, 0.5f);
-            
+
             ///todo currently it chases ONLY if player is out of sight. it can also be like on sight.
             if (_chaseRoutine != null && ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0))
                 StopCoroutine(_chaseRoutine);
@@ -130,7 +158,7 @@ public class EnemyController : LivingEntity
     {
         if (GetModule<ObserverModule>() == false) return;
         if (GetModule<ObserverModule>().isActiveAndEnabled == false) return;
-        
+
         //if it was chasing it stops.
         if (Id == signal.Agent.Id && ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0))
         {
@@ -139,7 +167,7 @@ public class EnemyController : LivingEntity
             _animator.SetTrigger("WALK");
         }
     }
-    
+
     private void SetupDependencies()
     {
         if (_animator == null) GetComponent<Animator>();
@@ -153,10 +181,10 @@ public class EnemyController : LivingEntity
             if (_navMeshAgent == null) GetComponent<NavMeshAgent>();
             _pathArray = GetModule<PatrolModule>()._patrolNodes.ToArray();
         }
-        
+
         if (_animator != null) //todo will change
             _animator.SetTrigger("WALK"); //todo will change
-        
+
         if (_lookAtManager != null)
             _lookAtManager.solver.SetLookAtWeight(0);
     }
@@ -165,7 +193,7 @@ public class EnemyController : LivingEntity
     {
         //Chaser
         if ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0) HandleChase();
-        
+
         //Patroller
         if (_isPatrolling == false || (_activeBehaviors & EnemyBehaviorFlags.Patroller) == 0) return;
         UpdateDestination();
@@ -179,13 +207,13 @@ public class EnemyController : LivingEntity
 
     private const int m_chaseUpdateFreq = 250;
     private int m_currentChaseUpdateTick = 0;
-    
+
     private void HandleChase()
     {
         _animator.SetBool("CHASE", m_isChasing);
         _navMeshAgent.speed = m_isChasing ? _chaseSpeed : _walkSpeed;
         _isPatrolling = m_isChasing == false;
-        
+
         if (m_isChasing == false) return;
 
         if (m_currentChaseUpdateTick == m_chaseUpdateFreq) m_currentChaseUpdateTick = 0;
@@ -195,7 +223,7 @@ public class EnemyController : LivingEntity
             m_currentChaseUpdateTick++;
             return;
         }
-        
+
         _navMeshAgent.SetDestination(_player.transform.position);
     }
 
@@ -217,7 +245,7 @@ public class EnemyController : LivingEntity
     private IEnumerator ChaseRoutine()
     {
         yield return new WaitForSeconds(_timeUntilStopChase);
-        
+
         m_isChasing = false;
         Debug.Log(Id + " has lost player at: " + Time.time.ToString("F3"));
     }
@@ -234,21 +262,19 @@ public class EnemyController : LivingEntity
 
     private Sequence _lookSeq;
     private bool m_lastLookState;
-    
+
     private void SetLookAtState(Transform target, bool look, float lookSpeed = 1)
     {
         if (m_lastLookState == look) return;
         if (_lookAtManager == null) return;
-        
-        
+
+
         _lookAtManager.solver.target = target;
         _lookSeq?.Kill();
         _lookSeq = DOTween.Sequence();
 
-        _lookSeq.Append(DOVirtual.Float(look ? 0 : 1, look ? 1 : 0, lookSpeed, a =>
-        {
-            _lookAtManager.solver.SetLookAtWeight(a);
-        }));
+        _lookSeq.Append(
+            DOVirtual.Float(look ? 0 : 1, look ? 1 : 0, lookSpeed, a => { _lookAtManager.solver.SetLookAtWeight(a); }));
     }
 
     [BoxGroup("Patroller")]
@@ -264,7 +290,7 @@ public class EnemyController : LivingEntity
     {
         None = 0,
         Patroller = 1,
-        Teleporter = 2, 
+        Teleporter = 2,
         Chaser = 4,
         Attacker = 8,
     }

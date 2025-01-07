@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Unity.Collections;
 using UnityEditor;
 using UnityEngine;
@@ -12,32 +13,39 @@ public enum AfterTeleportBehavior
     SwitchToChase = 1,
     MoveAToB = 2,
     StayUntil = 3,
+    PlayAnim = 4,
 }
 
-[RequireComponent(typeof(EnemyController))]
+[RequireComponent(typeof(EnemyEntity))]
 public class TeleporterModule : DynamicEntityModuleBase
 {
-    [Inject] private readonly TeleportsManager _teleportsManager;
-    
+    [Inject] private readonly EnemyNodesManager _enemyNodesManager;
+
     [SerializeField] private TeleportNode _nodePrefab;
     [SerializeField] private List<TeleportNode> _nodes;
-    
+
     [HideInInspector] public Vector3 _nodeSpawnPos;
     private Transform m_nodesContainer;
- 
+
+    private List<EnemyActionNode> GetEnemyActionNodes()
+    {
+        return _nodes.Cast<EnemyActionNode>().ToList();
+    }
+
 
     protected override void Awake()
     {
         base.Awake();
-        
+
         _nodeSpawnPos = transform.localPosition + Vector3.forward;
-        if (ParentController == null) GetComponent<EnemyController>();
-        _teleportsManager.RegisterEnemyController(ParentController as EnemyController, _nodes);
+        if (ParentController == null) GetComponent<EnemyEntity>();
+        _enemyNodesManager.RegisterEnemyController(ParentController as EnemyEntity, GetEnemyActionNodes());
     }
 
+    //editor only
     public void AddNewNode()
     {
-        if (ParentController == null) GetComponent<EnemyController>();
+        if (ParentController == null) GetComponent<EnemyEntity>();
         if (m_nodesContainer == null)
         {
             m_nodesContainer = new GameObject("Teleport Nodes Container").transform;
@@ -46,7 +54,7 @@ public class TeleporterModule : DynamicEntityModuleBase
         }
 
         var newNode = Instantiate(_nodePrefab, _nodeSpawnPos, Quaternion.identity, m_nodesContainer.transform);
-        newNode.Init(ParentController as EnemyController);
+        newNode.Init(ParentController as EnemyEntity);
         _nodes.Add(newNode);
     }
 
@@ -68,12 +76,12 @@ public class TeleporterModule : DynamicEntityModuleBase
             if (node != null)
                 DestroyImmediate(node.gameObject);
         }
-        
+
         _nodes.Clear();
     }
-    
+
     private bool m_nodeGizmosState = false;
-    
+
     public void ShowGizmos()
     {
         if (m_nodesContainer == null) return;
@@ -99,7 +107,7 @@ public class TeleporterModuleEditor : Editor
     private GUIStyle greenStyle;
     private GUIStyle redStyle;
     private GUIStyle yellowStyle;
-    
+
     public GUIStyle GetButtonWithColor(Color color)
     {
         GUIStyle style = new GUIStyle(GUI.skin.button);
@@ -108,7 +116,7 @@ public class TeleporterModuleEditor : Editor
 
         return style;
     }
-    
+
     private Texture2D MakeTex(int width, int height, Color color)
     {
         Color[] pix = new Color[width * height];
@@ -116,7 +124,7 @@ public class TeleporterModuleEditor : Editor
         {
             pix[i] = color;
         }
-        
+
         Texture2D result = new Texture2D(width, height);
         result.SetPixels(pix);
         result.Apply();
@@ -130,7 +138,7 @@ public class TeleporterModuleEditor : Editor
         if (_stylesReady == false)
         {
             greenStyle = GetButtonWithColor(Color.green * 0.65f);
-            redStyle = GetButtonWithColor(Color.red * .65f); 
+            redStyle = GetButtonWithColor(Color.red * .65f);
             yellowStyle = GetButtonWithColor(Color.yellow * .65f);
             _stylesReady = true;
         }
@@ -138,31 +146,31 @@ public class TeleporterModuleEditor : Editor
         TeleporterModule myScript = (TeleporterModule) target;
 
         GUILayout.BeginHorizontal();
-        
+
         if (GUILayout.Button("Add New Nod At Position", greenStyle))
         {
             myScript.AddNewNode();
         }
-        
+
         if (GUILayout.Button("Reset Spawn Position", yellowStyle))
         {
             myScript.ResetSpawnerPosition();
         }
-        
-         
+
+
         if (GUILayout.Button("Clear All Nodes", redStyle))
         {
             myScript.ClearNodes();
         }
-        
+
         GUILayout.EndHorizontal();
-        
+
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("Select Nodes Container"))
         {
             myScript.SelectNodesContainer();
         }
-        
+
         GUILayout.EndHorizontal();
         GUILayout.Space(5);
         GUILayout.BeginHorizontal();
@@ -170,17 +178,17 @@ public class TeleporterModuleEditor : Editor
         {
             myScript.ShowGizmos();
         }
-        
+
         GUILayout.EndHorizontal();
     }
-    
+
     public void OnSceneGUI()
     {
         var teleportModule = target as TeleporterModule;
 
         EditorGUI.BeginChangeCheck();
         Vector3 newTargetPosition = Handles.PositionHandle(teleportModule._nodeSpawnPos, Quaternion.identity);
-        
+
         if (EditorGUI.EndChangeCheck())
         {
             Undo.RecordObject(this, "Move Patrol Handle");
@@ -188,4 +196,3 @@ public class TeleporterModuleEditor : Editor
         }
     }
 }
-

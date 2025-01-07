@@ -2,18 +2,18 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class TeleportsManager 
+public class EnemyNodesManager 
 {
-    private Dictionary<EnemyController, List<TeleportNode>> m_teleportNodesMap;
+    private Dictionary<EnemyEntity, List<EnemyActionNode>> m_teleportNodesMap;
 
-    public void RegisterEnemyController(EnemyController enemy, List<TeleportNode> nodes)
+    public void RegisterEnemyController(EnemyEntity enemy, List<EnemyActionNode> nodes)
     {
-        if (m_teleportNodesMap == null) m_teleportNodesMap = new Dictionary<EnemyController, List<TeleportNode>>();
+        if (m_teleportNodesMap == null) m_teleportNodesMap = new Dictionary<EnemyEntity, List<EnemyActionNode>>();
         
         if (m_teleportNodesMap.ContainsKey(enemy))
         {
             m_teleportNodesMap[enemy].Clear();
-            m_teleportNodesMap[enemy] = new List<TeleportNode>();
+            m_teleportNodesMap[enemy] = new List<EnemyActionNode>();
             m_teleportNodesMap[enemy] = nodes;
         }
         else
@@ -22,9 +22,9 @@ public class TeleportsManager
         }
     }
 
-    public List<TeleportNode> GetNodesOfTheEnemy(EnemyController enemy)
+    public List<EnemyActionNode> GetNodesOfTheEnemy(EnemyEntity enemy)
     {
-        List<TeleportNode> teleportNodes = null;
+        List<EnemyActionNode> teleportNodes = null;
         
         if (m_teleportNodesMap.TryGetValue(enemy, out teleportNodes) == false)
         {
@@ -34,7 +34,7 @@ public class TeleportsManager
         return teleportNodes;
     }
 
-    public void RemoveEnemyFromTheList(EnemyController enemy)
+    public void RemoveEnemyFromTheList(EnemyEntity enemy)
     {
         if (m_teleportNodesMap.ContainsKey(enemy))
         {

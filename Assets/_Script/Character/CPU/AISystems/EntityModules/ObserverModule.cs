@@ -4,7 +4,7 @@ using Game.World;
 using UnityEngine;
 using Zenject;
 
-[RequireComponent(typeof(EnemyController))]
+[RequireComponent(typeof(EnemyEntity))]
 public class ObserverModule : DynamicEntityModuleBase
 {
     [SerializeField] private LayerMask m_targetMask;

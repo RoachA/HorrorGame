@@ -1,11 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
-using Game.World;
 using UnityEngine;
 
 namespace Game.World
 {
-    public class LivingEntity : WorldEntity
+    public class DynamicEntity : WorldEntity
     {
         [Header("Modules Registry")]
         [SerializeField] public List<DynamicEntityModuleBase> RegisteredModules = new List<DynamicEntityModuleBase>();

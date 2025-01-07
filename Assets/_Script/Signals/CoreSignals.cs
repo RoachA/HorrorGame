@@ -53,15 +53,29 @@ public class CoreSignals : MonoBehaviour
 
    public class OnTeleportApprovedSignal
    {
-      public EnemyController Enemy;
+      public EnemyEntity Enemy;
       public Vector3 TargetPos;
       public IAction Reaction;
       
 
-      public OnTeleportApprovedSignal(EnemyController enemy, Vector3 targetPos, IAction reaction)
+      public OnTeleportApprovedSignal(EnemyEntity enemy, Vector3 targetPos, IAction reaction)
       {
          Enemy = enemy;
          TargetPos = targetPos;
+         Reaction = reaction;
+      }
+   }
+
+   public class OnChaseApprovedSignal
+   {
+      public EnemyEntity Enemy;
+      public Transform ChaseTarget;
+      public IAction Reaction;
+
+      public OnChaseApprovedSignal(EnemyEntity enemy, Transform transform, IAction reaction)
+      {
+         Enemy = enemy;
+         ChaseTarget = transform;
          Reaction = reaction;
       }
    }

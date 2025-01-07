@@ -23,7 +23,7 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.Bind<UIManager>().FromInstance(_gameplayUIManager).AsSingle();
         
         Container.Bind<CoreSignals>().AsSingle();
-        Container.Bind<TeleportsManager>().AsSingle();
+        Container.Bind<EnemyNodesManager>().AsSingle();
         Container.Bind<WorldObjectsContainer>().AsSingle();
         Container.Bind<PlayerInventoryManager>().AsSingle();
 

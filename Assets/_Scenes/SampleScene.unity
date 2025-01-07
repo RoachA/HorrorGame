@@ -90531,6 +90531,10 @@ PrefabInstance:
       propertyPath: m_Intensity
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 2004771826, guid: 3e059ed339699ad4d849f95c6b8af580, type: 3}
+      propertyPath: m_Shadows.m_Strength
+      value: 0.95
+      objectReference: {fileID: 0}
     - target: {fileID: 165566742419961702, guid: 3e059ed339699ad4d849f95c6b8af580,
         type: 3}
       propertyPath: m_BackGroundColor.b
