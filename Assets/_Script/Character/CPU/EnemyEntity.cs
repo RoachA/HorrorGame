@@ -109,7 +109,7 @@ public class EnemyEntity : DynamicEntity
         void PatrolDependencies()
         {
             if (_navMeshAgent == null) GetComponent<NavMeshAgent>();
-            _pathArray = GetModule<PatrolModule>()._patrolNodes.ToArray();
+            _pathArray = GetModule<SimpleNavMeshPatroller>()._patrolNodes.ToArray();
         }
 
         if (_animator != null) //todo will change
