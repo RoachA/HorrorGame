@@ -9,11 +9,11 @@ using Zenject;
 public class SceneInstaller : MonoInstaller<SceneInstaller>
 {
     readonly SignalBus _signalBus;
-    
+
     [SerializeField] private PlayerController _playerController;
     [SerializeField] private AudioManager _audioManager;
     [SerializeField] private UIManager _gameplayUIManager;
-    
+
     public override void InstallBindings()
     {
         SignalBusInstaller.Install(Container);
@@ -21,9 +21,8 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.Bind<PlayerController>().FromInstance(_playerController).AsSingle();
         Container.Bind<AudioManager>().FromInstance(_audioManager).AsSingle();
         Container.Bind<UIManager>().FromInstance(_gameplayUIManager).AsSingle();
-        
+
         Container.Bind<CoreSignals>().AsSingle();
-        Container.Bind<EnemyNodesManager>().AsSingle();
         Container.Bind<WorldObjectsContainer>().AsSingle();
         Container.Bind<PlayerInventoryManager>().AsSingle();
 
@@ -31,13 +30,9 @@ public class SceneInstaller : MonoInstaller<SceneInstaller>
         Container.DeclareSignal<CoreSignals.DoorWasOpenedSignal>();
         Container.DeclareSignal<CoreSignals.PlayerWasSightedSignal>();
         Container.DeclareSignal<CoreSignals.PlayerSightWasLostSignal>();
-        Container.DeclareSignal<CoreSignals.PlayerTriggeredTeleportZoneSignal>();
-        Container.DeclareSignal<CoreSignals.OnTeleportApprovedSignal>();
         Container.DeclareSignal<CoreSignals.OnLayoutStateUpdateSignal>();
         Container.DeclareSignal<CoreSignals.OnAffectFlashLightSignal>();
         Container.DeclareSignal<CoreSignals.OverwriteMouseLookSensitivitySignal>();
         Container.DeclareSignal<CoreSignals.SetCursorSignal>();
     }
 }
-
-

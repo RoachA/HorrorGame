@@ -39,47 +39,6 @@ public class CoreSignals : MonoBehaviour
       }
    }
 
-   public class PlayerTriggeredTeleportZoneSignal
-   {
-      public IHaveIdentity Area;
-      public float Time;
-
-      public PlayerTriggeredTeleportZoneSignal(IHaveIdentity area, float time)
-      {
-         Area = area;
-         Time = time;
-      }
-   }
-
-   public class OnTeleportApprovedSignal
-   {
-      public EnemyEntity Enemy;
-      public Vector3 TargetPos;
-      public IAction Reaction;
-      
-
-      public OnTeleportApprovedSignal(EnemyEntity enemy, Vector3 targetPos, IAction reaction)
-      {
-         Enemy = enemy;
-         TargetPos = targetPos;
-         Reaction = reaction;
-      }
-   }
-
-   public class OnChaseApprovedSignal
-   {
-      public EnemyEntity Enemy;
-      public Transform ChaseTarget;
-      public IAction Reaction;
-
-      public OnChaseApprovedSignal(EnemyEntity enemy, Transform transform, IAction reaction)
-      {
-         Enemy = enemy;
-         ChaseTarget = transform;
-         Reaction = reaction;
-      }
-   }
-
    public class OnLayoutStateUpdateSignal
    {
       public LayoutBase Layout;

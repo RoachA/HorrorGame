@@ -11,21 +11,21 @@ public class ObserverModule : DynamicEntityModuleBase
     [SerializeField] private LayerMask m_obstructionMask;
     [SerializeField] public Transform _inputOrgan;
     [SerializeField] public bool _isObserving;
-    
-    
+
+
     // this map is used to add multipliers for detection algorithm. certain situations make it easier for player to get detected.
     [SerializeField] private ClueWeights _clueWeights;
 
     [SerializeField] public float _hearingRange;
-    
+
     [SerializeField] public SightParameters _sightFurstrum;
 
     private const float m_updatePerSecond = .25f;
     private Coroutine m_fovRoutine;
     public bool _canSeePlayer;
     public GameObject _localPlayerRef;
-    
-    
+
+
     protected override void Awake()
     {
         base.Awake();
@@ -42,7 +42,7 @@ public class ObserverModule : DynamicEntityModuleBase
         if (state && m_fovRoutine != null) StopCoroutine(m_fovRoutine);
         else m_fovRoutine = StartCoroutine(FOVRoutine());
     }
-    
+
     private IEnumerator FOVRoutine()
     {
         WaitForSeconds wait = new WaitForSeconds(m_updatePerSecond);
@@ -53,12 +53,13 @@ public class ObserverModule : DynamicEntityModuleBase
             FieldOfViewCheck();
         }
     }
-    
+
     private void FieldOfViewCheck()
     {
         int bufferSize = 10;
         Collider[] hitColliders = new Collider[bufferSize];
-        var rangeChecks = Physics.OverlapSphereNonAlloc(transform.position, _sightFurstrum.SightRange, hitColliders, m_targetMask);
+        var rangeChecks =
+            Physics.OverlapSphereNonAlloc(transform.position, _sightFurstrum.SightRange, hitColliders, m_targetMask);
         bool wasSeen = _canSeePlayer;
 
         if (rangeChecks != 0)
@@ -85,10 +86,10 @@ public class ObserverModule : DynamicEntityModuleBase
         }
         else if (_canSeePlayer)
             _canSeePlayer = false;
-        
+
         if (wasSeen && _canSeePlayer == false) _bus.Fire(new CoreSignals.PlayerSightWasLostSignal(ParentController, Time.time));
     }
-    
+
     /// <summary>
     /// always hear a spherical area
     /// if hears something - detects source -> check magnitude : this affects the chances of the enemy getting awared or not. further away > less likely use InverseSquare
@@ -116,4 +117,3 @@ public class ObserverModule : DynamicEntityModuleBase
         public float _playerMovementSpeed;
     }
 }
-

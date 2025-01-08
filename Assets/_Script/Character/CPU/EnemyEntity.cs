@@ -52,80 +52,15 @@ public class EnemyEntity : DynamicEntity
         base.Start();
         _bus.Subscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
         _bus.Subscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
-
-
-        if ((_activeBehaviors & EnemyBehaviorFlags.Teleporter) != 0)
-        {
-            _bus.Subscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
-            _container.SetActive(false);
-        }
-
-        if ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0)
-        {
-            _bus.Subscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
-            _container.SetActive(false);
-        }
+        
     }
 
     protected void OnDestroy()
     {
         _bus.TryUnsubscribe<CoreSignals.PlayerWasSightedSignal>(OnPlayerSighted);
         _bus.TryUnsubscribe<CoreSignals.PlayerSightWasLostSignal>(OnPlayerSightLost);
-        _bus.TryUnsubscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
-        _bus.TryUnsubscribe<CoreSignals.OnTeleportApprovedSignal>(OnTeleportRequested);
     }
-
-    private void OnTeleportRequested(CoreSignals.OnTeleportApprovedSignal signal)
-    {
-        //here enemies check who will respond to the request.
-        if (signal.Enemy == this)
-        {
-            //the enemy tries to resolve what the signal's reaction request is.
-            if (signal.Reaction is BlinkAction blink)
-            {
-                HandleBlinkAction(blink);
-            }
-        }
-    }
-
-    private void OnChaseRequested(CoreSignals.OnChaseApprovedSignal signal)
-    {
-        if (signal.Enemy == this)
-        {
-            if (signal.Reaction is ChaseAction chase)
-            {
-                HandleChaseAction(chase);
-            }
-        }
-    }
-
-    private ChaseAction _currentChaseAction;
-
-    private void HandleChaseAction(ChaseAction chase)
-    {
-        Debug.Log("Chase was triggered for " + gameObject.name + " it follows " + chase.ChaseTarget.gameObject.name);
-        _currentChaseAction = chase;
-        GetModule<ChaserModule>();
-    }
-
-    BlinkAction _currentBlickAction;
-
-    private void HandleBlinkAction(BlinkAction blink)
-    {
-        switch (blink.StartType)
-        {
-            case BlinkStartType.OnPlayerView:
-                Debug.Log("Blink was triggered for " + gameObject.name);
-                _currentBlickAction = blink;
-                _isObserving = true;
-                SetModuleState<ObserverModule>(_isObserving);
-                GetModule<ObserverModule>().SetObserving(_isObserving);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
-    }
-
+    
     /// <summary>
     /// A method that can do many things on sight. but is not robust. 
     /// </summary>
@@ -146,11 +81,6 @@ public class EnemyEntity : DynamicEntity
             ///todo currently it chases ONLY if player is out of sight. it can also be like on sight.
             if (_chaseRoutine != null && ((_activeBehaviors & EnemyBehaviorFlags.Chaser) != 0))
                 StopCoroutine(_chaseRoutine);
-
-            if (((_activeBehaviors & EnemyBehaviorFlags.Teleporter) != 0))
-            {
-                _blinkRoutine = StartCoroutine(BlinkRoutine(null, _currentBlickAction.WaitTime));
-            }
         }
     }
 
